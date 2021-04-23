@@ -2,44 +2,35 @@ package com.univtours.eBilletterie.security;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
+
+import com.univtours.eBilletterie.entities.User;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.univtours.eBilletterie.entities.User;
-
 public class MyUserDetails implements UserDetails {
-	
-	private String username;
-	private String password;
-	private boolean active;
-	private List<GrantedAuthority> authorities;
+
+	private User user;
 
 	public MyUserDetails(User user) {
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.active = user.isActive();
-        this.authorities = Arrays.stream(user.getRoles().split(","))
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-    }
+		this.user = user;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
+		return Arrays.stream(user.getRoles().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 	}
 
 	@Override
 	public String getPassword() {
-		return password;
+		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return username;
+		return user.getUsername();
 	}
 
 	@Override
@@ -47,7 +38,7 @@ public class MyUserDetails implements UserDetails {
 		return true;
 	}
 
-	@Override	
+	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
@@ -59,7 +50,11 @@ public class MyUserDetails implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return active;
+		return user.isActive();
 	}
+     
+    public String getFullName() {
+        return user.getFirst_name() + " " + user.getLast_name();
+    }
 
 }
