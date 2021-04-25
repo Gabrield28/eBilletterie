@@ -85,8 +85,41 @@ public class User {
 		this.roles = roles;
 	}
 
+	public void addRole(String role) {
+		this.roles += ", " + role;
+	}
+
+	public Boolean hasRole(String role) {
+		String[] roles = this.roles.split(", ");
+		for (String r : roles) {
+			if(r.equals(role)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Boolean isAdmin() {
+		return hasRole("ROLE_ADMIN");
+	}
+
+	public String showDominantRole() {
+		if(this.hasRole("ROLE_ADMIN"))
+			return "Administrateur";
+		else
+			return "Utilisateur";
+	}
+
 	public boolean isActive() {
 		return active;
+	}
+
+	public String showIsBlocked() {
+		if (active) {
+			return "Non";
+		} else {
+			return "Oui";
+		}
 	}
 
 	public void setActive(boolean active) {
@@ -137,11 +170,35 @@ public class User {
 		return age;
 	}
 
+	public String showAge() {
+		if(age == 0)
+			return "Age non défini";
+		else
+			return Integer.toString(age);
+	}
+
 	public void setAge(int age) {
 		this.age = age;
 	}
 
 	public User() {
 		//
+	}
+
+	public String getFullName() {
+		return this.first_name + " " + this.last_name;
+	}
+
+	public String showAddress() {
+		if (city == null) {
+			return "Addresse non définie";
+		}
+		if(address == null && postal_code == 0 && city != null) {
+			return this.city;
+		}
+		if(address == null && postal_code > 0 && city != null) {
+			return this.postal_code + " " + this.city;
+		}
+		return this.address + ", " + this.postal_code + " " + this.city;
 	}
 }

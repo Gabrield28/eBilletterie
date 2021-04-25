@@ -7,3 +7,9 @@ html, body {
 .body-content {
     min-height: calc(100% - 274px - 56px);
 }
+#events table.table tbody th {
+    font-weight: 400!important;
+}
+.event-image {
+    max-height: 200px;
+}

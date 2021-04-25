@@ -13,25 +13,27 @@
                 <h1>Inscription</h1>
             </div>
 
-            <form th:action="@{/process_register}" th:object="${user}" method="post" class="col-6 m-auto py-3">
+            <form th:action="@{/process_register}" th:object="${user}" method="post" class="col-7 m-auto py-3">
+            
+                <div th:replace="fragments :: alerts"></div>
                 <div class="form-group row">
                     <label class="col-4 col-form-label">Nom :</label>
                     <div class="col-8">
-                        <input type="text" th:field="*{last_name}" class="form-control" required/>
+                        <input type="text" th:field="*{last_name}" class="form-control" required minlength="2"/>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label class="col-4 col-form-label">Prénom :</label>
                     <div class="col-8">
-                        <input type="text" th:field="*{first_name}" class="form-control" required/>
+                        <input type="text" th:field="*{first_name}" class="form-control" required minlength="2"/>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-4 col-form-label">Pseudonyme :</label>
+                    <label class="col-4 col-form-label">Nom d'utilisateur :</label>
                     <div class="col-8">
-                        <input type="text" th:field="*{username}" class="form-control" required/>
+                        <input type="text" th:field="*{username}" class="form-control" required minlength="4"/>
                     </div>
                 </div>
 
@@ -46,6 +48,13 @@
                     <label class="col-4 col-form-label">Mot de passe :</label>
                     <div class="col-8">
                         <input type="password" th:field="*{password}" class="form-control" required minlength="6"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-4 col-form-label">Mot de passe (confirmation) :</label>
+                    <div class="col-8">
+                        <input type="password" name="password_confirmation" class="form-control" required minlength="6"/>
                     </div>
                 </div>
 
