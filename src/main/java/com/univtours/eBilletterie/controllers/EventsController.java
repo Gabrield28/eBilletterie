@@ -2,9 +2,13 @@ package com.univtours.eBilletterie.controllers;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.univtours.eBilletterie.entities.Event;
 import com.univtours.eBilletterie.entities.Rate;
 import com.univtours.eBilletterie.entities.User;
+import com.univtours.eBilletterie.repositories.BookingRepository;
 import com.univtours.eBilletterie.repositories.EventRepository;
 import com.univtours.eBilletterie.repositories.RateRepository;
 import com.univtours.eBilletterie.services.FileUploadService;
@@ -38,6 +43,9 @@ public class EventsController extends BaseController {
 
     @Autowired
     RateRepository rateRepo;
+
+    @Autowired
+    BookingRepository bookingRepo;
 
     @GetMapping("/admin/events")
     public String browse(Model model, Principal principal, RedirectAttributes redirectAttributes) {
@@ -381,7 +389,134 @@ public class EventsController extends BaseController {
         return "redirect:/admin";
     }
 
-    @GetMapping("events/{event}")
+    @GetMapping("/events")
+    public String browsePublic(Model model, Principal principal, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        model = fillModel(model, "Evénements - TicketMaster", principal);
+
+        List<Event> events = eventRepo.findAll();
+
+        String typeFilter = request.getParameter("typeFilter");
+        if (typeFilter != null) {
+            switch (typeFilter) {
+            case "concerts":
+                events = filterByType(events, 1);
+                model.addAttribute("filterByConcerts", true);
+                break;
+            case "sports":
+                events = filterByType(events, 2);
+                model.addAttribute("filterBySports", true);
+                break;
+            case "arts":
+                events = filterByType(events, 3);
+                model.addAttribute("filterByArts", true);
+                break;
+            default:
+                typeFilter = "all";
+                model.addAttribute("filterByAll", true);
+                break;
+            }
+        } else {
+            model.addAttribute("filterByAll", true);
+        }
+
+        String qType = request.getParameter("qType");
+        String q = request.getParameter("q");
+        if (qType != null && q != null) {
+            if (!q.isBlank()) {
+                switch (qType) {
+                    case "date":
+                        model.addAttribute("searchByDate", true);
+                        if (!q.matches("[0-3][0-9]-[0-1][0-9]-20[0-9][0-9]")) {
+                            redirectAttributes.addFlashAttribute("error", "Date invalide.");
+                            return "redirect:/events";                            
+                        }
+                        events = filterByDate(events, q);
+                        break;
+                    case "locale":
+                        model.addAttribute("searchByLocale", true);
+                        events = filterByLocale(events, q);
+                        break;
+                    default:
+                        model.addAttribute("searchByTitle", true);
+                        events = filterByTitle(events, q);
+                        break;
+                }
+                model.addAttribute("q", q);
+            }
+        }
+
+        model.addAttribute("events", events);
+
+        return "event/browse-public";
+    }
+
+    private List<Event> filterByType(List<Event> events, Integer targetType) {
+        ListIterator<Event> iterator = events.listIterator();
+        while (iterator.hasNext()) {
+            Event event = iterator.next();
+            Integer type = event.getType();
+            if (!type.equals(targetType)) {
+                iterator.remove();
+            }
+        } 
+        return events;
+    }
+
+    private List<Event> filterByTitle(List<Event> events, String targetTitle) {
+        ListIterator<Event> iterator = events.listIterator();
+        while (iterator.hasNext()) {
+            Event event = iterator.next();
+            Boolean flag1 = event.getTitle().toLowerCase().contains(targetTitle.toLowerCase());
+            Boolean flag2 = targetTitle.toLowerCase().contains(event.getTitle().toLowerCase());
+            if (flag1 == false && flag2 == false) {
+                iterator.remove();
+            }
+        } 
+        return events;
+    }
+
+    private List<Event> filterByDate(List<Event> events, String targetDate) {
+        String pattern = "dd-MM-yyyy";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        LocalDate targetLocalDate = LocalDate.parse(targetDate, formatter);
+        Integer targetYear = targetLocalDate.getYear();
+        Integer targetMonth = targetLocalDate.getMonthValue();
+        Integer targetDay = targetLocalDate.getDayOfMonth();
+
+        ListIterator<Event> iterator = events.listIterator();
+        while (iterator.hasNext()) {
+            Event event = iterator.next();
+
+            LocalDateTime date = event.getDatetime();
+            Integer year = date.getYear();
+            Integer month = date.getMonthValue();
+            Integer day = date.getDayOfMonth();
+
+            Boolean flag1 = (year.equals(targetYear));
+            Boolean flag2 = (month.equals(targetMonth));
+            Boolean flag3 = (day.equals(targetDay));
+            if (flag1 == false || flag2 == false || flag3 == false) {
+                iterator.remove();
+            }
+        }
+        return events;
+    }
+
+    private List<Event> filterByLocale(List<Event> events, String targetLocale) {
+        ListIterator<Event> iterator = events.listIterator();
+        while (iterator.hasNext()) {
+            Event event = iterator.next();
+            Boolean flag1 = event.getCity().toLowerCase().contains(targetLocale.toLowerCase());
+            Boolean flag2 = targetLocale.toLowerCase().contains(event.getCity().toLowerCase());
+            if (flag1 == false && flag2 == false) {
+                iterator.remove();
+            }
+        } 
+        return events;
+    }
+
+    @GetMapping("/events/{event}")
     public String indexPublic(Event event, Model model, Principal principal) {
 
         model = fillModel(model, event.getTitle() + " - TicketMaster", principal);
@@ -397,44 +532,44 @@ public class EventsController extends BaseController {
             } else {
 
                 Integer age = (int) Double.POSITIVE_INFINITY;
-    
+
                 Double firstClassPrice = (double) 0;
                 Double secondClassPrice = (double) 0;
                 Double thirdClassPrice = (double) 0;
-    
+
                 for (Rate rate : rates) {
-                    if (rate.getMaxAge() <= age && user.getAge() <= rate.getMaxAge() ) {
+                    if (rate.getMaxAge() <= age && user.getAge() <= rate.getMaxAge()) {
                         age = rate.getMaxAge();
                         switch (rate.getTicket_class()) {
-                            case 1:
-                                firstClassPrice = rate.getPrice();
-                                break;
-                            case 2:
-                                secondClassPrice = rate.getPrice();
-                                break;
-                            case 3:
-                                thirdClassPrice = rate.getPrice();
-                                break;
-                            default:
-                                break;
+                        case 1:
+                            firstClassPrice = rate.getPrice();
+                            break;
+                        case 2:
+                            secondClassPrice = rate.getPrice();
+                            break;
+                        case 3:
+                            thirdClassPrice = rate.getPrice();
+                            break;
+                        default:
+                            break;
                         }
                     }
                 }
-    
-                if (!firstClassPrice.equals((double)0) || !secondClassPrice.equals((double)0) || !thirdClassPrice.equals((double)0)) {
-                    model.addAttribute("price", true);
+
+                if (!firstClassPrice.equals((double) 0) || !secondClassPrice.equals((double) 0)
+                        || !thirdClassPrice.equals((double) 0)) {
+                    model.addAttribute("price", true); 
                 }
-                if (!firstClassPrice.equals((double)0)) {
+                if (!firstClassPrice.equals((double) 0)) {
                     model.addAttribute("firstClassPrice", firstClassPrice);
                 }
-                if (!secondClassPrice.equals((double)0)) {
+                if (!secondClassPrice.equals((double) 0)) {
                     model.addAttribute("secondClassPrice", secondClassPrice);
                 }
-                if (!thirdClassPrice.equals((double)0)) {
+                if (!thirdClassPrice.equals((double) 0)) {
                     model.addAttribute("thirdClassPrice", thirdClassPrice);
                 }
             }
-
 
         }
 
