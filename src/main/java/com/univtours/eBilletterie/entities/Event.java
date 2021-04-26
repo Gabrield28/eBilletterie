@@ -1,9 +1,19 @@
 package com.univtours.eBilletterie.entities;
 
+
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 @Entity
@@ -38,6 +48,17 @@ public class Event {
 
     @Column(nullable = true)
     private String image;
+
+    @Column(nullable = false)
+    private Integer type;
+
+    @Column(nullable = false)
+    private LocalDateTime datetime;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "event")
+    private Set<Rate> rates = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -151,7 +172,59 @@ public class Event {
         return "/images/uploaded/events/" + image;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public String showType() {
+        switch (type) {
+            case 1:
+                return "Concert";
+            case 2:
+                return "Sports";
+            case 3:
+                return "Arts et théâtre";
+            default:
+                return "Type non défini";
+        }
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public LocalDateTime getDatetime() {
+        return datetime;
+    }
+
+    public String showDate() {
+        String pattern = "yyyy-MM-dd";
+        return datetime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public String showTime() {
+        String pattern = "HH:mm";
+        return datetime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public String showDateTime() {
+        String pattern = "dd/MM/yyyy à HH:mm";
+        return datetime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public void setDatetime(LocalDateTime datetime) {
+        this.datetime = datetime;
+    }
+
+    public Set<Rate> getRates() {
+        return rates;
+    }
+
+    public void setRates(Set<Rate> rates) {
+        this.rates = rates;
+    }
+
     public Event() {
-        //
+        type = 0;
     }
 }

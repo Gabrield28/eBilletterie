@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            
+            <div class="text-center">
+                <h1>Modifier mes données</h1>
+            </div>
+            
+            <form th:action=@{/profile/update} th:object="${user}" method="post" enctype="multipart/form-data" class="col-6 m-auto py-3">
+
+                <div th:replace="fragments :: alerts"></div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Nom :</label>
+                    <div class="col-8">
+                        <input type="text" th:field="*{last_name}" class="form-control" required minlength="2"/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Prénom :</label>
+                    <div class="col-8">
+                        <input type="text" th:field="*{first_name}" class="form-control" required minlength="2"/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Nom d'utilisateur :</label>
+                    <div class="col-8">
+                        <input type="text" th:field="*{username}" class="form-control" required minlength="4" disabled/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Email :</label>
+                    <div class="col-8">
+                        <input type="email" th:field="*{email}" class="form-control" required minlength="5" maxlength="5" disabled/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Age :</label>
+                    <div class="col-8">
+                        <input type="number" th:field="*{age}" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="py-3 text-end">
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

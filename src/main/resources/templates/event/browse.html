@@ -24,9 +24,8 @@
                         <tr>
                             <th>Titre</th>
                             <th>Artiste / Groupe</th>
-                            <th>Addresse</th>
-                            <th>Capacité</th>
-                            <th>Age Minimum</th>
+                            <th>Type</th>
+                            <th>Date</th>
                             <th>Maintenu</th>
                             <th class="text-end">Actions</th>
                         </tr>
@@ -35,9 +34,8 @@
                         <tr th:each="event : ${events}">
                             <td th:text="${event.title}"></th>
                             <td th:text="${event.artist}"></th>
-                            <td th:text="${event.showAddress}"></th>
-                            <td th:text="${event.capacity}"></th>
-                            <td th:text="${event.minimum_age_allowed}"></th> 
+                            <td th:text="${event.showType}"></th>
+                            <td th:text="${event.showDateTime}"></th>
                             <td th:text="${event.showActive}"></th>
                             <td class="text-end">
                                 <a class="btn btn-primary" th:href="${'/admin/events/' + event.id + '/'}">Détails</a>

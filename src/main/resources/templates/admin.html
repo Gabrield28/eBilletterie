@@ -15,7 +15,7 @@
                         <h1 class="h2">Gérer les utilisateurs</h1>
                     </div>
                     <div class="col-12 col-sm-6 text-end">
-                        <a class="btn btn-primary" th:href="${'/admin/users'}">Tous les utilisateurs</a>
+                        <a class="btn btn-primary my-1" th:href="${'/admin/users'}">Tous les utilisateurs</a>
                     </div>
                 </div>
                 <table class="table">
@@ -37,8 +37,8 @@
                             <td th:text="${user.showDominantRole}"></td>
                             <td th:text="${user.showIsBlocked}"></td>
                             <td class="text-end">
-                                <a class="btn btn-primary" th:href="${'/admin/users/' + user.id + '/'}">Détails</a>
-                                <a class="btn btn-warning" th:href="${'/admin/users/' + user.id + '/update'}">Modifier</a>
+                                <a class="btn btn-primary my-1" th:href="${'/admin/users/' + user.id + '/'}">Détails</a>
+                                <a class="btn btn-warning my-1" th:href="${'/admin/users/' + user.id + '/update'}">Modifier</a>
                             </td>
                         </tr>
                     </tbody>
@@ -50,8 +50,8 @@
                         <h1 class="h2">Gérer les événements</h1>
                     </div>
                     <div class="col-12 col-sm-6 text-end">
-                        <a class="btn btn-primary" th:href="${'/admin/events'}">Tous les événements</a>
-                        <a class="btn btn-success" th:href="${'/admin/events/create'}">Ajouter un événement</a>
+                        <a class="btn btn-primary my-1" th:href="${'/admin/events'}">Tous les événements</a>
+                        <a class="btn btn-success my-1" th:href="${'/admin/events/create'}">Ajouter un événement</a>
                     </div>
                 </div>
                 <table class="table">
@@ -59,9 +59,8 @@
                         <tr>
                             <th>Titre</th>
                             <th>Artiste / Groupe</th>
-                            <th>Addresse</th>
-                            <th>Capacité</th>
-                            <th>Age Minimum</th>
+                            <th>Type</th>
+                            <th>Date</th>
                             <th>Maintenu</th>
                             <th class="text-end">Actions</th>
                         </tr>
@@ -70,14 +69,13 @@
                         <tr th:each="event : ${events}">
                             <td th:text="${event.title}"></th>
                             <td th:text="${event.artist}"></th>
-                            <td th:text="${event.showAddress}"></th>
-                            <td th:text="${event.capacity}"></th>
-                            <td th:text="${event.minimum_age_allowed}"></th>
+                            <td th:text="${event.showType}"></th>
+                            <td th:text="${event.showDateTime}"></th>
                             <td th:text="${event.showActive}"></th>
                             <td class="text-end">
-                                <a class="btn btn-primary" th:href="${'/admin/events/' + event.id + '/'}">Détails</a>
-                                <a class="btn btn-warning" th:href="${'/admin/events/' + event.id + '/update'}">Modifier</a>
-                                <a class="btn btn-danger" th:href="${'/admin/events/' + event.id + '/delete'}">Supprimer</a>
+                                <a class="btn btn-primary my-1" th:href="${'/admin/events/' + event.id + '/'}">Détails</a>
+                                <a class="btn btn-warning my-1" th:href="${'/admin/events/' + event.id + '/update'}">Modifier</a>
+                                <a class="btn btn-danger my-1" th:href="${'/admin/events/' + event.id + '/delete'}">Supprimer</a>
                             </td>
                         </tr>
                     </tbody>

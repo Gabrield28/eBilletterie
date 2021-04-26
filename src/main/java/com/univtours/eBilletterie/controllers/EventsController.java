@@ -2,13 +2,19 @@ package com.univtours.eBilletterie.controllers;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.univtours.eBilletterie.entities.Event;
+import com.univtours.eBilletterie.entities.Rate;
+import com.univtours.eBilletterie.entities.User;
 import com.univtours.eBilletterie.repositories.EventRepository;
+import com.univtours.eBilletterie.repositories.RateRepository;
 import com.univtours.eBilletterie.services.FileUploadService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +36,9 @@ public class EventsController extends BaseController {
     @Autowired
     EventRepository eventRepo;
 
+    @Autowired
+    RateRepository rateRepo;
+
     @GetMapping("/admin/events")
     public String browse(Model model, Principal principal, RedirectAttributes redirectAttributes) {
 
@@ -46,7 +55,7 @@ public class EventsController extends BaseController {
                     "Vous n'avez pas les autorisations nécessaires pour accéder à cette page.");
             return "redirect:/";
         }
-        
+
         List<Event> events = eventRepo.findAll();
 
         model.addAttribute("events", events);
@@ -78,6 +87,10 @@ public class EventsController extends BaseController {
 
         model.addAttribute("event", event);
 
+        List<Rate> rates = rateRepo.findByEventId(event.getId());
+
+        model.addAttribute("rates", rates);
+
         return "event/read";
     }
 
@@ -108,7 +121,7 @@ public class EventsController extends BaseController {
 
     @PostMapping("/admin/events/create")
     public String createPost(Event event, @RequestParam("_image") MultipartFile multipartFile, Model model,
-            Principal principal, RedirectAttributes redirectAttributes) {
+            Principal principal, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         if (principal == null) {
             redirectAttributes.addFlashAttribute("error",
@@ -134,8 +147,18 @@ public class EventsController extends BaseController {
             return "redirect:/admin/events/create";
         }
 
-        if (!event.getAddress().matches("^[a-zA-Z0-9-_',. ]{2,}([ ]?[a-zA-Z-'0-9,._])*$")) {
-            redirectAttributes.addFlashAttribute("error", "Addresse invalide.");
+        if (!request.getParameter("_type").matches("^[123]$")) {
+            redirectAttributes.addFlashAttribute("error", "Type invalide.");
+            return "redirect:/admin/events/create";
+        }
+
+        if (!request.getParameter("_date").matches("^20[2-3][0-9]-[0-1][0-9]-[0-3][0-9]$")) {
+            redirectAttributes.addFlashAttribute("error", "Date invalide.");
+            return "redirect:/admin/events/create";
+        }
+
+        if (!request.getParameter("_time").matches("^[0-2][0-9]:[0-5][0-9]$")) {
+            redirectAttributes.addFlashAttribute("error", "Heure invalide.");
             return "redirect:/admin/events/create";
         }
 
@@ -166,11 +189,20 @@ public class EventsController extends BaseController {
 
         event.setActive(true);
 
+        event.setType(Integer.parseInt(request.getParameter("_type")));
+
+        String datetime = request.getParameter("_date") + " " + request.getParameter("_time");
+        String pattern = "yyyy-MM-dd HH:mm";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        LocalDateTime localDateTime = LocalDateTime.parse(datetime, formatter);
+        event.setDatetime(localDateTime);
+
         event = eventRepo.save(event);
 
         if (multipartFile.getSize() != 0) {
 
             String fileName = event.getId() + " - " + StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            fileName = fileName.replaceAll("\\s", "");
             event.setImage(fileName);
 
             String uploadDir = UPLOAD_DIR;
@@ -236,7 +268,8 @@ public class EventsController extends BaseController {
     }
 
     @PostMapping("/admin/events/process_update")
-    public String updatePost(Event event, Model model, Principal principal, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String updatePost(Event event, @RequestParam("_image") MultipartFile multipartFile, Model model,
+            Principal principal, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         if (principal == null) {
             redirectAttributes.addFlashAttribute("error",
@@ -263,7 +296,22 @@ public class EventsController extends BaseController {
 
             if (!event.getArtist().matches("^[a-zA-Z-'0-9]{2,}([ ]?[a-zA-Z-'0-9])*$")) {
                 redirectAttributes.addFlashAttribute("error", "Artiste/Groupe invalide.");
-                return "redirect:/admin/events/create";
+                return "redirect:/admin/events/" + event.getId() + "/update";
+            }
+
+            if (!request.getParameter("_type").matches("^[123]$")) {
+                redirectAttributes.addFlashAttribute("error", "Type invalide.");
+                return "redirect:/admin/events/" + event.getId() + "/update";
+            }
+
+            if (!request.getParameter("_date").matches("^20[2-3][0-9]-[0-1][0-9]-[0-3][0-9]$")) {
+                redirectAttributes.addFlashAttribute("error", "Date invalide.");
+                return "redirect:/admin/events/" + event.getId() + "/update";
+            }
+
+            if (!request.getParameter("_time").matches("^[0-2][0-9]:[0-5][0-9]$")) {
+                redirectAttributes.addFlashAttribute("error", "Heure invalide.");
+                return "redirect:/admin/events/" + event.getId() + "/update";
             }
 
             if (!event.getAddress().matches("^[a-zA-Z0-9-_',. ]{2,}([ ]?[a-zA-Z-'0-9,._])*$")) {
@@ -297,8 +345,30 @@ public class EventsController extends BaseController {
                 event.setActive(false);
             }
 
+            event.setType(Integer.parseInt(request.getParameter("_type")));
 
-            if (event.getImage() == null) {
+            String datetime = request.getParameter("_date") + " " + request.getParameter("_time");
+            String pattern = "yyyy-MM-dd HH:mm";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+            LocalDateTime localDateTime = LocalDateTime.parse(datetime, formatter);
+            event.setDatetime(localDateTime);
+
+            if (multipartFile.getSize() != 0) {
+
+                String fileName = event.getId() + " - " + StringUtils.cleanPath(multipartFile.getOriginalFilename());
+                fileName = fileName.replaceAll("\\s", "");
+                event.setImage(fileName);
+
+                String uploadDir = UPLOAD_DIR;
+                try {
+                    FileUploadService.saveFile(uploadDir, fileName, multipartFile);
+                } catch (IOException e) {
+                    eventRepo.deleteById(event.getId());
+                    redirectAttributes.addFlashAttribute("error", e.getMessage());
+                    return "redirect:/admin/events/create";
+                }
+
+            } else {
                 event.setImage(modifiedEvent.get().getImage());
             }
 
@@ -309,5 +379,65 @@ public class EventsController extends BaseController {
         }
 
         return "redirect:/admin";
+    }
+
+    @GetMapping("events/{event}")
+    public String indexPublic(Event event, Model model, Principal principal) {
+
+        model = fillModel(model, event.getTitle() + " - TicketMaster", principal);
+
+        if (principal != null) {
+
+            Set<Rate> rates = event.getRates();
+
+            User user = userRepo.findByUsername(principal.getName());
+
+            if (user.getAge() < event.getMinimum_age_allowed()) {
+                model.addAttribute("ageNotAllowed", true);
+            } else {
+
+                Integer age = (int) Double.POSITIVE_INFINITY;
+    
+                Double firstClassPrice = (double) 0;
+                Double secondClassPrice = (double) 0;
+                Double thirdClassPrice = (double) 0;
+    
+                for (Rate rate : rates) {
+                    if (rate.getMaxAge() <= age && user.getAge() <= rate.getMaxAge() ) {
+                        age = rate.getMaxAge();
+                        switch (rate.getTicket_class()) {
+                            case 1:
+                                firstClassPrice = rate.getPrice();
+                                break;
+                            case 2:
+                                secondClassPrice = rate.getPrice();
+                                break;
+                            case 3:
+                                thirdClassPrice = rate.getPrice();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+    
+                if (!firstClassPrice.equals((double)0) || !secondClassPrice.equals((double)0) || !thirdClassPrice.equals((double)0)) {
+                    model.addAttribute("price", true);
+                }
+                if (!firstClassPrice.equals((double)0)) {
+                    model.addAttribute("firstClassPrice", firstClassPrice);
+                }
+                if (!secondClassPrice.equals((double)0)) {
+                    model.addAttribute("secondClassPrice", secondClassPrice);
+                }
+                if (!thirdClassPrice.equals((double)0)) {
+                    model.addAttribute("thirdClassPrice", thirdClassPrice);
+                }
+            }
+
+
+        }
+
+        return "event/read-public";
     }
 }

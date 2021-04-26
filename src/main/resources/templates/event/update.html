@@ -34,6 +34,34 @@
                 </div>
 
                 <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Type :</label>
+                    <div class="col-8">
+                        <select class="form-control" name="_type" id="type">
+                            <option value="1" th:if="${event.type == 1}" selected>Concert</option>
+                            <option value="1" th:if="${event.type != 1}">Concert</option>
+                            <option value="2" th:if="${event.type == 2}" selected>Sports</option>
+                            <option value="2" th:if="${event.type != 2}">Sports</option>
+                            <option value="3" th:if="${event.type == 3}" selected>Arts et théâtre</option>
+                            <option value="3" th:if="${event.type != 3}">Arts et théâtre</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Date :</label>
+                    <div class="col-8">
+                        <input class="form-control" name="_date" type="date" th:value="${event.showDate}" required>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Heure :</label>
+                    <div class="col-8">
+                        <input class="form-control" name="_time" type="time" th:value="${event.showTime}" required>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Addresse :</label>
                     <div class="col-8">
                         <input type="text" th:field="*{address}" class="form-control" required/>

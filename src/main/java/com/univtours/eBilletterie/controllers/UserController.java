@@ -105,6 +105,10 @@ public class UserController extends BaseController {
 			redirectAttributes.addFlashAttribute("error", "Prénom invalide.");
 			return "redirect:/register";
 		}
+        if (user.getAge() < 0) {
+            redirectAttributes.addFlashAttribute("error", "L'âge ne peut pas être négatif.");
+            return "redirect:/register";
+        }
 		if (!user.getUsername().matches("^[a-zA-Z-'0-9_]{4,}$")) {
 			redirectAttributes.addFlashAttribute("error", "Nom d'utilisateur invalide.");
 			return "redirect:/register";
@@ -248,5 +252,68 @@ public class UserController extends BaseController {
         }
 
         return "redirect:/admin";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, Principal principal,
+            RedirectAttributes redirectAttributes) {
+
+        if (principal == null) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Vous devez être authentifié pour accéder à cette page.");
+            return "redirect:/";
+        }
+
+        model = fillModel(model, "Modifier mon profil - TicketMaster", principal);
+
+        User user = userRepo.findByUsername(principal.getName());
+
+        model.addAttribute("user", user);
+
+        return "user/profile";
+    }
+
+    @PostMapping("/profile/update")
+    public String profilePost(User user, Model model, Principal principal, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+        if (principal == null) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Vous devez être authentifié pour accéder à cette page.");
+            return "redirect:/";
+        }
+
+        model = fillModel(model, "Modifier mon profil - TicketMaster", principal);
+
+        User modifiedUser = userRepo.findByUsername(principal.getName());
+
+        if (modifiedUser != null) {
+
+            User mUser = modifiedUser;
+
+            if (!user.getLast_name().matches("^[a-zA-Z-']{2,}([ ]?[a-zA-Z-'])*$")) {
+                redirectAttributes.addFlashAttribute("error", "Nom invalide.");
+                return "redirect:/profile";
+            }
+            if (!user.getFirst_name().matches("^[a-zA-Z-']{2,}([ ]?[a-zA-Z-'])*$")) {
+                redirectAttributes.addFlashAttribute("error", "Prénom invalide.");
+                return "redirect:/profile";
+            }
+            if (user.getAge() < 0) {
+                redirectAttributes.addFlashAttribute("error", "L'âge ne peut pas être négatif.");
+                return "redirect:/profile";
+            }
+
+            mUser.setLast_name(user.getLast_name());
+            mUser.setFirst_name(user.getFirst_name());
+            mUser.setAge(user.getAge());
+
+            userRepo.save(mUser);
+        } else {
+            redirectAttributes.addFlashAttribute("error", "L'utilisateur n'existe pas.");
+            return "redirect:/";
+        }
+
+        redirectAttributes.addFlashAttribute("success", "Données modifiées avec succès.");
+        return "redirect:/";
     }
 }

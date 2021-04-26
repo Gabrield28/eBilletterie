@@ -17,56 +17,81 @@
                 
                 <div th:replace="fragments :: alerts"></div>
 
-                <div class="form-group row">
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Titre :</label>
                     <div class="col-8">
                         <input type="text" th:field="*{title}" class="form-control" required/>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Artiste / Groupe :</label>
                     <div class="col-8">
                         <input type="text" th:field="*{artist}" class="form-control" required/>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Type :</label>
+                    <div class="col-8">
+                        <select class="form-control" name="_type" id="type">
+                            <option value="1">Concert</option>
+                            <option value="2">Sports</option>
+                            <option value="3">Arts et théâtre</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Date :</label>
+                    <div class="col-8">
+                        <input class="form-control" name="_date" type="date" required>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Heure :</label>
+                    <div class="col-8">
+                        <input class="form-control" name="_time" type="time" required>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Addresse :</label>
                     <div class="col-8">
                         <input type="text" th:field="*{address}" class="form-control" required/>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Code Postal :</label>
                     <div class="col-8">
                         <input type="number" th:field="*{postal_code}" class="form-control" required minlength="5" maxlength="5"/>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Ville :</label>
                     <div class="col-8">
                         <input type="text" th:field="*{city}" class="form-control" required/>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Capacité :</label>
                     <div class="col-8">
                         <input type="number" th:field="*{capacity}" class="form-control"/>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Age minimum :</label>
                     <div class="col-8">
                         <input type="number" th:field="*{minimum_age_allowed}" class="form-control"/>
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group row py-1">
                     <label class="col-4 col-form-label">Image :</label>
                     <div class="col-8">
                         <input type="file" name="_image" accept="image/*" class="form-control"/>

@@ -33,17 +33,8 @@ public class User {
 	@Column(nullable = false)
 	private String last_name;
 
-	@Column(nullable = true)
-	private String address;
-
-	@Column(nullable = true)
-	private int postal_code;
-
-	@Column(nullable = true)
-	private String city;
-
-	@Column(nullable = true)
-	private int age;
+	@Column(nullable = false)
+	private Integer age;
 
 	public Long getId() {
 		return id;
@@ -142,32 +133,12 @@ public class User {
 		this.last_name = last_name;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public int getPostal_code() {
-		return postal_code;
-	}
-
-	public void setPostal_code(int postal_code) {
-		this.postal_code = postal_code;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public int getAge() {
+	public Integer getAge() {
 		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 
 	public String showAge() {
@@ -177,28 +148,11 @@ public class User {
 			return Integer.toString(age);
 	}
 
-	public void setAge(int age) {
-		this.age = age;
-	}
-
 	public User() {
 		//
 	}
 
 	public String getFullName() {
 		return this.first_name + " " + this.last_name;
-	}
-
-	public String showAddress() {
-		if (city == null) {
-			return "Addresse non définie";
-		}
-		if(address == null && postal_code == 0 && city != null) {
-			return this.city;
-		}
-		if(address == null && postal_code > 0 && city != null) {
-			return this.postal_code + " " + this.city;
-		}
-		return this.address + ", " + this.postal_code + " " + this.city;
 	}
 }

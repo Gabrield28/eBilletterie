@@ -36,6 +36,14 @@
                     <th class="col-12 col-sm-6 fw-normal" th:text="${event.artist}"></th>
                 </tr>
                 <tr class="row">
+                    <th class="col-12 col-sm-6">Type</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.showType}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Date et heure</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.showDateTime}"></th>
+                </tr>
+                <tr class="row">
                     <th class="col-12 col-sm-6">Addresse</th>
                     <th class="col-12 col-sm-6 fw-normal" th:text="${event.showAddress}"></th>
                 </tr>
@@ -57,6 +65,37 @@
                         <img th:src="${event.getPhotosImagePath}" th:alt="${event.title}" class="col-12 col-sm-6 img-fluid">
                     </th>
                 </tr>
+            </table>
+
+            <div class="row align-items-end">
+                <div class="col-12 col-sm-8">
+                    <h1>Tarifs</h1>
+                </div>
+                <div class="col-12 col-sm-4 text-end">
+                    <a class="my-1 btn btn-success" th:href="${'/admin/events/' + event.id + '/rates/add'}">Ajouter un tarif</a>    
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Place</th>
+                        <th>Prix</th>
+                        <th>Age maximum</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="rate : ${rates}">
+                        <td th:text="${rate.showTicketClass }"></th>
+                        <td th:text="${rate.price + '€'}"></th>
+                        <td th:text="${rate.maxAge}"></th>
+                        <td class="text-end">
+                            <a class="btn btn-warning" th:href="${'/admin/events/' + event.id + '/rates/' + rate.id + '/update'}">Modifier</a>
+                            <a class="btn btn-danger" th:href="${'/admin/events/' + event.id + '/rates/' + rate.id + '/delete'}">Supprimer</a>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
 
         </div>
