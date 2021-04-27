@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            <div th:replace="fragments :: alerts"></div>
+            
+            <div id="tickets" class="py-3">
+                <div class="row align-items-end">
+                    <div class="col-12 col-sm-6">
+                        <h1 class="h2">Mes billets</h1>
+                    </div>
+                    <div class="col-12 col-sm-6 text-end"></div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Référence</th>
+                            <th>Evénement</th>
+                            <th>Date de l'événement</th>
+                            <th>Classe</th>
+                            <th>Acheté le</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="ticket : ${tickets}">
+                            <td th:text="${ticket.id}"></td>
+                            <td> 
+                                <a th:href="${'/events/' + ticket.event.id}" th:text="${ticket.event.title}" class="text-decoration-none"></a>
+                            </td>
+                            <td th:text="${ticket.event.showDateTime}"></td>
+                            <td th:text="${ticket.showTicketClass}"></td>
+                            <td th:text="${ticket.showCreatedAt}"></td>
+                        </tr>
+                        <tr th:if="${emptyList == true}">
+                            <td colspan="6">Aucun billet actif trouvé.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

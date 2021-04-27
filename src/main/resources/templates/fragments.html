@@ -31,11 +31,22 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/events">Evénements</a>
                         </li>
+                        <li class="nav-item" th:if="${principal != null}">
+                            <div>
+                                <span th:if="${bookingCount != null}" th:text="${bookingCount}" class="badge rounded-pill bg-primary" style="float:right;margin-bottom: -25px;margin-right: -5px;"></span>
+                                <a class="nav-link" href="/bookings/">Mes réservations<span class="sr-only">(count)</span></a>
+                            </div>
+                        </li><li class="nav-item" th:if="${principal != null}">
+                            <div>
+                                <span th:if="${ticketCount != null}" th:text="${ticketCount}" class="badge rounded-pill bg-primary" style="float:right;margin-bottom: -25px;margin-right: -5px;"></span>
+                                <a class="nav-link" href="/tickets/">Mes billets<span class="sr-only">(count)</span></a>
+                            </div>
+                        </li>
                         <li class="nav-item" th:if="${principal == null}">
                             <a class="nav-link" href="/login">Connexion</a>
                         </li>
                         <li class="nav-item" th:if="${principal != null}">
-                            <a class="nav-link" href="/profile">Profile</a>
+                            <a class="nav-link" href="/profile">Mon profile</a>
                         </li>
                         <li class="nav-item" th:if="${principal != null && hasRoleAdmin == true}">
                             <a class="nav-link" href="/admin">Espace Admin</a>

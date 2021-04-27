@@ -4,20 +4,15 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.univtours.eBilletterie.entities.Event;
 import com.univtours.eBilletterie.entities.Rate;
-import com.univtours.eBilletterie.entities.User;
-import com.univtours.eBilletterie.repositories.BookingRepository;
 import com.univtours.eBilletterie.repositories.EventRepository;
 import com.univtours.eBilletterie.repositories.RateRepository;
 import com.univtours.eBilletterie.services.FileUploadService;
@@ -43,9 +38,6 @@ public class EventsController extends BaseController {
 
     @Autowired
     RateRepository rateRepo;
-
-    @Autowired
-    BookingRepository bookingRepo;
 
     @GetMapping("/admin/events")
     public String browse(Model model, Principal principal, RedirectAttributes redirectAttributes) {
@@ -521,57 +513,7 @@ public class EventsController extends BaseController {
 
         model = fillModel(model, event.getTitle() + " - TicketMaster", principal);
 
-        if (principal != null) {
-
-            Set<Rate> rates = event.getRates();
-
-            User user = userRepo.findByUsername(principal.getName());
-
-            if (user.getAge() < event.getMinimum_age_allowed()) {
-                model.addAttribute("ageNotAllowed", true);
-            } else {
-
-                Integer age = (int) Double.POSITIVE_INFINITY;
-
-                Double firstClassPrice = (double) 0;
-                Double secondClassPrice = (double) 0;
-                Double thirdClassPrice = (double) 0;
-
-                for (Rate rate : rates) {
-                    if (rate.getMaxAge() <= age && user.getAge() <= rate.getMaxAge()) {
-                        age = rate.getMaxAge();
-                        switch (rate.getTicket_class()) {
-                        case 1:
-                            firstClassPrice = rate.getPrice();
-                            break;
-                        case 2:
-                            secondClassPrice = rate.getPrice();
-                            break;
-                        case 3:
-                            thirdClassPrice = rate.getPrice();
-                            break;
-                        default:
-                            break;
-                        }
-                    }
-                }
-
-                if (!firstClassPrice.equals((double) 0) || !secondClassPrice.equals((double) 0)
-                        || !thirdClassPrice.equals((double) 0)) {
-                    model.addAttribute("price", true); 
-                }
-                if (!firstClassPrice.equals((double) 0)) {
-                    model.addAttribute("firstClassPrice", firstClassPrice);
-                }
-                if (!secondClassPrice.equals((double) 0)) {
-                    model.addAttribute("secondClassPrice", secondClassPrice);
-                }
-                if (!thirdClassPrice.equals((double) 0)) {
-                    model.addAttribute("thirdClassPrice", thirdClassPrice);
-                }
-            }
-
-        }
+        model = getRatesForUser(model, event, principal);
 
         return "event/read-public";
     }

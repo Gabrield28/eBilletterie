@@ -1,9 +1,11 @@
 package com.univtours.eBilletterie.controllers;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.univtours.eBilletterie.entities.Event;
+import com.univtours.eBilletterie.entities.Ticket;
 import com.univtours.eBilletterie.entities.User;
 import com.univtours.eBilletterie.repositories.EventRepository;
 
@@ -49,7 +51,39 @@ public class AdminController extends BaseController {
             events = events.subList(events.size()-LIMIT, events.size());
         }
 		model.addAttribute("events", events);
+
+        model = fillModelWithStats(model);
 		
 		return "admin";
 	}
+
+    private Model fillModelWithStats(Model model) {
+        List<Ticket> tList = ticketRepo.findAll();
+        Integer yearlyConfirmedBookingsCount = 0;
+        Integer monthlyConfirmedBookingsCount = 0;
+        Integer weeklyConfirmedBookingsCount = 0; 
+        Integer dailyConfirmedBookingsCount = 0;
+        LocalDateTime now = LocalDateTime.now();
+        for (Ticket ticket : tList) {
+            LocalDateTime eventDateTime = ticket.getCreatedAt();
+            if (eventDateTime.isAfter(now.minusYears(1))) {
+                yearlyConfirmedBookingsCount++;
+            }
+            if (eventDateTime.isAfter(now.minusMonths(1))) {
+                monthlyConfirmedBookingsCount++;
+            }
+            if (eventDateTime.isAfter(now.minusWeeks(1))) {
+                weeklyConfirmedBookingsCount++;
+            }
+            if (eventDateTime.isAfter(now.minusDays(1))) {
+                dailyConfirmedBookingsCount++;
+            }
+        }
+        model.addAttribute("confirmedBookingsCount", tList.size());
+        model.addAttribute("yearlyConfirmedBookingsCount", yearlyConfirmedBookingsCount);
+        model.addAttribute("monthlyConfirmedBookingsCount", monthlyConfirmedBookingsCount);
+        model.addAttribute("weeklyConfirmedBookingsCount", weeklyConfirmedBookingsCount);
+        model.addAttribute("dailyConfirmedBookingsCount", dailyConfirmedBookingsCount);
+        return model;
+    }
 }

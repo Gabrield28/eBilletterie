@@ -9,6 +9,37 @@
 
         <div class="body-content container py-5">
             <div th:replace="fragments :: alerts"></div>
+            <div id="stats" class="py-3">
+                <div class="row align-items-end">
+                    <div class="col-12 col-sm-6">
+                        <h1 class="h2">Statistiques</h1>
+                    </div>
+                    <div class="col-12 col-sm-6 text-end">
+                    </div>
+                </div>
+                <table class="table">
+                    <tr>
+                        <th class="w-50">Nombre de billets vendus</th>
+                        <td th:text="${confirmedBookingsCount + ' billets'}"></td>
+                    </tr>
+                    <tr>
+                        <th class="w-50">Nombre de billets vendus cette année</th>
+                        <td th:text="${yearlyConfirmedBookingsCount + ' billets'}"></td>
+                    </tr>
+                    <tr>
+                        <th class="w-50">Nombre de billets vendus ce mois</th>
+                        <td th:text="${monthlyConfirmedBookingsCount + ' billets'}"></td>
+                    </tr>
+                    <tr>
+                        <th class="w-50">Nombre de billets vendus cette semaine</th>
+                        <td th:text="${weeklyConfirmedBookingsCount + ' billets'}"></td>
+                    </tr>
+                    <tr>
+                        <th class="w-50">Nombre de billets vendus dans les dernières 24h</th>
+                        <td th:text="${dailyConfirmedBookingsCount + ' billets'}"></td>
+                    </tr>
+                </table>
+            </div>
             <div id="users" class="py-3">
                 <div class="row align-items-end">
                     <div class="col-12 col-sm-6">

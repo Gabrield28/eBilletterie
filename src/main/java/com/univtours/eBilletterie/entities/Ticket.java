@@ -17,7 +17,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-public class Booking {
+public class Ticket {
     @Id
     @GeneratedValue
     private Long id;
@@ -38,22 +38,10 @@ public class Booking {
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private LocalDateTime expiryDateTime;
-
-    @Column(nullable = false)
     private Integer ticketCkass;
 
     @Column(nullable = false)
-    private Double priceAtReservation;
-
-    @Column(nullable = false)
     private Boolean active;
-
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private Boolean confirmed;
-
-    @Column(nullable = true)
-    private LocalDateTime confirmedAt;
 
     public Long getId() {
         return id;
@@ -83,26 +71,13 @@ public class Booking {
         return createdAt;
     }
 
-    public String showCreatedAtDate() {
-        String pattern = "yyyy-MM-dd";
+    public String showCreatedAt() {
+        String pattern = "dd/MM/yyyy à HH:mm";
         return createdAt.format(DateTimeFormatter.ofPattern(pattern));
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getExpiryDateTime() {
-        return expiryDateTime;
-    }
-
-    public String showExpiryDate() {
-        String pattern = "yyyy-MM-dd";
-        return expiryDateTime.format(DateTimeFormatter.ofPattern(pattern));
-    }
-
-    public void setExpiryDateTime(LocalDateTime expiryDateTime) {
-        this.expiryDateTime = expiryDateTime;
     }
 
     public Integer getTicketCkass() {
@@ -126,14 +101,6 @@ public class Booking {
         this.ticketCkass = ticketCkass;
     }
 
-    public Double getPriceAtReservation() {
-        return priceAtReservation;
-    }
-
-    public void setPriceAtReservation(Double priceAtReservation) {
-        this.priceAtReservation = priceAtReservation;
-    }
-
     public Boolean isActive() {
         return active;
     }
@@ -142,24 +109,7 @@ public class Booking {
         this.active = active;
     }
 
-    public Boolean isConfirmed() {
-        return confirmed;
+    public Ticket() {
+        // 
     }
-
-    public void setConfirmed(Boolean confirmed) {
-        this.confirmed = confirmed;
-    }
-
-    public LocalDateTime getConfirmedAt() {
-        return confirmedAt;
-    }
-
-    public void setConfirmedAt(LocalDateTime confirmedAt) {
-        this.confirmedAt = confirmedAt;
-    }
-
-    public Booking() {
-        //
-    }
-
 }

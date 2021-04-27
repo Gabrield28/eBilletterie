@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            <div th:replace="fragments :: alerts"></div>
+            <div class="row justify-content-between">
+                <div class="col-12 col-md-5">
+                    <table class="table">
+                        <legend>Panier des billets</legend>
+                        <tr>
+                            <th>Evénement</th>
+                            <th>Classe</th>
+                            <th>Prix</th>
+                        </tr>
+                        <tr th:each="booking : ${bookings}">
+                            <td th:text="${booking.event.title}"></td>
+                            <td th:text="${booking.showTicketClass}"></td>
+                            <td th:text="${booking.priceAtReservation + '€'}"></td>
+                        </tr>
+                        <tr>
+                            <th>Prix total</th>
+                            <th></th>
+                            <th th:text="${totalPrice + '€'}"></th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-12 col-md-5">
+                    <form th:action="@{/bookings/confirm}" method="post">
+                        <legend>Détails de paiement</legend>
+                        <div class='form-group mb-3'>
+                            <label class='control-label' for="name">Nom sur la carte</label>
+                            <input required class='form-control' id="name" name="name" type='text' placeholder="Nom complet">
+                        </div>
+                        <div class='form-group mb-3'>
+                            <label class='control-label' for="cardNumber">Numéro de carte</label>
+                            <input required autocomplete='off' id="cardNumber" name="cardNumber" class='form-control card-number' type='text' placeholder="Numéro de carte" minlength="16" maxlength="16">
+                        </div>
+                        <div class="row mb-3">
+                            <div class='form-group col-6'>
+                                <label class='control-label'>CVC</label>
+                                <input required autocomplete='off' id="cvc" name="cvc" class='form-control card-cvc' type='number' minlength="3" maxlength="3" placeholder="CVC">
+                            </div>
+                            <div class='form-group col-3'>
+                                <label class='control-label'>Expiration</label>
+                                <input required class='form-control' id="month" name="month" placeholder='Mois' type='number' min="1" max="12">
+                            </div>
+                            <div class='form-group col-3'>
+                                <label class='control-label'></label>
+                                <input required class='form-control' id="year" name="year" placeholder='Année' type='number' min="2021" max="2031">
+                            </div>
+                        </div>
+                        <div class='form-group mb-3 text-end'>
+                            <button class='btn btn-primary' type='submit'>Payer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>
