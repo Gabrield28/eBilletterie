@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+
+            <div th:replace="fragments :: alerts"></div>
+
+            <div class="py-3 text-end">
+                <a href="/events" class="btn btn-primary">Retour</a>
+            </div>
+
+            <div class="row">
+                <div class="row align-items-middle col-12 col-md-6">
+                    <div class="col-12">
+                        <h1 th:text="${event.title}"></h1>
+                    </div>
+                    <div class="col-12">
+                        <h2 class="h4" th:if="${event.artist != null}">[[${event.showType}]] - [[${event.artist}]]</h2>
+                        <h2 class="h4" th:if="${event.artist == null}">[[${event.showType}]]</h2>
+                    </div>
+                    <div class="col-12">
+                        <h2 class="h6 d-inline">Date et heure :
+                        </h2>
+                        <p class="d-inline" th:text="${event.showDateTime}"></p>
+                    </div>
+                    <div class="col-12">
+                        <h2 class="h6 d-inline">Addresse :
+                        </h2>
+                        <p class="d-inline" th:text="${event.showAddress}"></p>
+                    </div>
+                    <div class="col-12">
+                        <h2 class="h6 d-inline">Capacité d'acceuil :
+                        </h2>
+                        <p class="d-inline" th:text="${event.getCapacity}"></p>
+                    </div>
+                    <div class="col-12">
+                        <h2 class="h6 d-inline">Age Minimum :
+                        </h2>
+                        <p class="d-inline" th:text="${event.getMinimum_age_allowed}"></p>
+                    </div>
+                    <div th:if="${price != null && event.isActive}" class="col-12">
+                        <h2 class="h6">Prix :</h2>
+                        <form th:if="${firstClassPrice}" th:action="@{/events/{event}/buy(event=${event.id})}" method="post" class="py-1">
+                            <input type="hidden" name="firstClass" th:value="true">
+                            <button type="submit" class="btn btn-primary">1ère classe : [[${firstClassPrice}]]€</button>
+                        </form>
+                        <form th:if="${secondClassPrice}" th:action="@{/events/{event}/buy(event=${event.id})}" method="post" class="py-1">
+                            <input type="hidden" name="secondClass" th:value="true">
+                            <button type="submit" class="btn btn-primary">2ème classe : [[${secondClassPrice}]]€</button>
+                        </form>
+                        <form th:if="${thirdClassPrice}" th:action="@{/events/{event}/buy(event=${event.id})}" method="post" class="py-1">
+                            <input type="hidden" name="thirdClass" th:value="true">
+                            <button type="submit" class="btn btn-primary">3ème classe : [[${thirdClassPrice}]]€</button>
+                        </form>
+                    </div>
+                    <div th:if="${ageNotAllowed == true && event.isActive}" class="col-12">
+                        <h2 class="h4 d-inline text-danger fw-bold">Vous n'avez pas l'âge requis pour acheter un billet pour cet événement.</h2>
+                    </div>
+                    <div th:if="${event.isActive == false}" class="col-12">
+                        <h2 class="h4 d-inline text-danger fw-bold">Annulé</h2>
+                    </div>
+                    <div th:if="${principal == null && event.isActive == true}" class="col-12">
+                        <a class="btn btn-primary" href="/login">Connectez-vous pour voir les prix</a>
+                    </div>
+                </div>
+                <div class="row align-items-end col-12 col-md-6">
+                    <div class="col-12 text-end">
+                        <img th:src="${event.getPhotosImagePath}" th:alt="${event.title}" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            
+            <div class="text-center">
+                <h1>Ajouter un tarif</h1>
+            </div>
+        
+            <form th:action=@{/admin/events/{event}/rates/add(event=${rate.event.id})} th:object="${rate}" method="post" enctype="multipart/form-data" class="col-6 m-auto py-3">
+                
+                <div th:replace="fragments :: alerts"></div>
+
+                <input type="hidden" th:field="*{event}">
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Classe :</label>
+                    <div class="col-8">
+                        <select class="form-control" th:field="*{ticket_class}" id="type">
+                            <option value="1">1ère classe</option>
+                            <option value="2">2ème classe</option>
+                            <option value="3">3ème classe</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Prix :</label>
+                    <div class="col-8">
+                        <input type="number" step="0.01" th:field="*{price}" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Age maximum :</label>
+                    <div class="col-8">
+                        <input type="number" th:field="*{maxAge}" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="py-3 text-end">
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

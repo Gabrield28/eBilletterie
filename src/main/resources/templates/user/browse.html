@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            <div th:replace="fragments :: alerts"></div>
+            <div id="users" class="py-3">
+                <div class="row align-items-end">
+                    <div class="col-12 col-sm-6">
+                        <h1 class="h2">Gérer les utilisateurs</h1>
+                    </div>
+                    <div class="col-12 col-sm-6 text-end">
+                        <a class="btn btn-primary" th:href="${'/admin'}">Retour</a>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom complet</th>
+                            <th>Nom d'utilisateur</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Bloqué</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.getFullName}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.showDominantRole}"></td>
+                            <td th:text="${user.showIsBlocked}"></td>
+                            <td class="text-end">
+                                <a class="btn btn-primary" th:href="${'/admin/users/' + user.id + '/'}">Détails</a>
+                                <a class="btn btn-warning" th:href="${'/admin/users/' + user.id + '/update'}">Modifier</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

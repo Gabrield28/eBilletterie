@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            
+            <h1>Evénements</h1>
+
+            <div th:replace="fragments :: alerts"></div>
+
+            <form action="/events" method="GET" class="py-3">
+                <div class="row align-items-end">
+                    <div class="col-12 col-lg-6 py-3">
+                        <span class="me-3">
+                            <strong>Filtrer par type :</strong>
+                        </span>
+                        <span>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="typeFilter" id="all" value="all" th:if="${filterByAll == null}">
+                                <input class="form-check-input" type="radio" name="typeFilter" id="all" value="all" th:if="${filterByAll != null}" checked>
+                                <label class="form-check-label" for="all">Tous</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="typeFilter" id="concerts" value="concerts" th:if="${filterByConcerts == null}">
+                                <input class="form-check-input" type="radio" name="typeFilter" id="concerts" value="concerts" th:if="${filterByConcerts != null}" checked>
+                                <label class="form-check-label" for="concerts">Concerts</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="typeFilter" id="sports" value="sports" th:if="${filterBySports == null}">
+                                <input class="form-check-input" type="radio" name="typeFilter" id="sports" value="sports" th:if="${filterBySports != null}" checked>
+                                <label class="form-check-label" for="sports">Sports</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="typeFilter" id="arts" value="arts" th:if="${filterByArts == null}">
+                                <input class="form-check-input" type="radio" name="typeFilter" id="arts" value="arts" th:if="${filterByArts != null}" checked>
+                                <label class="form-check-label" for="arts">Arts et théâtre</label>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-12 col-lg-6 text-end pb-3">
+                        <a href="/events" class="btn btn-warning">Supprimer tous les filtres</a>
+                        <button type="submit" class="btn btn-primary">Filtrer / Rechercher</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <select class="form-control" name="qType" id="qType">
+                        <option value="title" th:if="${searchByTitle == null}">Titre</option>
+                        <option value="title" th:if="${searchByTitle != null}" selected>Titre</option>
+                        <option value="date" th:if="${searchByDate == null}">Date (dd-MM-yyyy)</option>
+                        <option value="date" th:if="${searchByDate != null}" selected>Date (dd-MM-yyyy)</option>
+                        <option value="locale" th:if="${searchByLocale == null}">Ville</option>
+                        <option value="locale" th:if="${searchByLocale != null}" selected>Ville</option>
+                    </select>
+                    <input type="search" class="form-control" name="q" placeholder="Rechercher" aria-label="Rechercher" aria-describedby="search-addon" th:if="${q == null}"/>
+                    <input type="search" class="form-control" name="q" placeholder="Rechercher" aria-label="Rechercher" aria-describedby="search-addon" th:if="${q != null}" th:value="${q}"/>
+                </div>
+            </form>
+
+            <div th:if="${events.size == 0}">
+                Aucun événement ne correspond à ces critères.
+            </div>
+
+            <div class="row">
+
+                <div th:each="event : ${events}" class="col-lg-3 col-md-4 col-sm-6 col-12">
+                    <div class="event-card" th:style="${'background-image: url(' + event.getPhotosImagePath + ')'}">
+                        <div class="overlay">
+                            <a class="overlay-btn border border-light text-light text-decoration-none bg-transparent" th:href="${'/events/' + event.id}">Afficher</a>
+                        </div>
+                        <div class="event-details bg-dark">
+                            <h3 th:text="${event.title}"></h3>
+                            <p class="text-white" th:text="${event.showType + ' - ' + event.artist}"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

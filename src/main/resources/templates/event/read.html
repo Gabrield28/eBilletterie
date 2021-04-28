@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            
+            <div th:replace="fragments :: alerts"></div>
+
+            <div class="row align-items-end">
+                <div class="col-12 col-sm-8">
+                    <h1>Evénement</h1>
+                </div>
+                <div class="col-12 col-sm-4 text-end">
+                    <a class="my-1 btn btn-primary" th:href="${'/admin/events/'}">Retour</a>
+                    <a class="my-1 btn btn-warning" th:href="${'/admin/events/' + event.id + '/update'}">Modifier</a>
+                    <a class="my-1 btn btn-danger" th:href="${'/admin/events/' + event.id + '/delete'}">Supprimer</a>
+                </div>
+            </div> 
+
+            <table class="table">
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Référence</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.id}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Titre</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.title}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Artiste / Groupe</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.artist}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Type</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.showType}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Date et heure</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.showDateTime}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Addresse</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.showAddress}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Capacité</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.capacity}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Age minimum</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.minimum_age_allowed}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Maintenu</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${event.showActive}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Image</th>
+                    <th class="col-12 col-sm-6 row">
+                        <img th:src="${event.getPhotosImagePath}" th:alt="${event.title}" class="col-12 col-sm-6 img-fluid">
+                    </th>
+                </tr>
+            </table>
+
+            <div class="row align-items-end">
+                <div class="col-12 col-sm-8">
+                    <h1>Tarifs</h1>
+                </div>
+                <div class="col-12 col-sm-4 text-end">
+                    <a class="my-1 btn btn-success" th:href="${'/admin/events/' + event.id + '/rates/add'}">Ajouter un tarif</a>    
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Place</th>
+                        <th>Prix</th>
+                        <th>Age maximum</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="rate : ${rates}">
+                        <td th:text="${rate.showTicketClass }"></th>
+                        <td th:text="${rate.price + '€'}"></th>
+                        <td th:text="${rate.maxAge}"></th>
+                        <td class="text-end">
+                            <a class="btn btn-warning" th:href="${'/admin/events/' + event.id + '/rates/' + rate.id + '/update'}">Modifier</a>
+                            <a class="btn btn-danger" th:href="${'/admin/events/' + event.id + '/rates/' + rate.id + '/delete'}">Supprimer</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

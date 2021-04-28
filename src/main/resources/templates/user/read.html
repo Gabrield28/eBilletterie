@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            
+            <div th:replace="fragments :: alerts"></div>
+
+            <div class="row align-items-end">
+                <div class="col-12 col-sm-8">
+                    <h1>Utilisateur</h1>
+                </div>
+                <div class="col-12 col-sm-4 text-end">
+                    <a class="my-1 btn btn-primary" th:href="${'/admin/users'}">Retour</a>
+                    <a class="my-1 btn btn-warning" th:href="${'/admin/users/' + user.id + '/update'}">Modifier</a>
+                </div>
+            </div> 
+
+            <table class="table">
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Référence</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.id}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Email</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.email}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Nom d'utilisateur</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.username}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Role</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.showDominantRole}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Bloqué</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.showIsBlocked}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Nom complet</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.getFullName}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Date de naissance</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.birthday}"></th>
+                </tr>
+                <tr class="row">
+                    <th class="col-12 col-sm-6">Age</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.getAge}"></th>
+                </tr>
+            </table>
+
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

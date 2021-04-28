@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            <div th:replace="fragments :: alerts"></div>
+
+            <div id="bookings" class="py-3">
+                <div class="row align-items-end">
+                    <div class="col-12 col-sm-6">
+                        <h1 class="h2">Mes réservations</h1>
+                    </div>
+                    <div class="col-12 col-sm-6 text-end">
+                        <a th:if="${emptyList == null}" class="btn btn-success" th:href="${'/bookings/confirm'}">Confirmer toutes les réservations</a>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Evénement</th>
+                            <th>Classe</th>
+                            <th>Prix</th>
+                            <th>Réservé le</th>
+                            <th>Expire le</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="booking : ${bookings}">
+                            <td>
+                                <a th:href="${'/events/' + booking.event.id}" th:text="${booking.event.title}" class="text-decoration-none"></a>
+                            </td>
+                            <td th:text="${booking.showTicketClass}"></td>
+                            <td th:text="${booking.priceAtReservation + '€'}"></td>
+                            <td th:text="${booking.showCreatedAtDate}"></td>
+                            <td th:text="${booking.showExpiryDate}"></td>
+                            <td class="text-end">
+                                <a class="btn btn-danger" th:href="${'/bookings/' + booking.id + '/cancel'}">Annuler</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${emptyList == true}">
+                            <td colspan="6">Aucune réservation active trouvée.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

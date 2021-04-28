@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            <div th:replace="fragments :: alerts"></div>
+            <div th:fragment="content">
+                <form th:action="@{/logout}" method="post" class="col-6 m-auto">
+                    <div class="text-center py-3">
+                        <h1>Voulez-vous vraiment vous déconnecter?</h1>
+                    </div>
+                    <div class="text-center py-3">
+                        <button type="submit" class="btn btn-primary">Oui</button>
+                        <a href="/" class="btn btn-secondary">Non</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

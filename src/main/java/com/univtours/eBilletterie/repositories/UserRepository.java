@@ -1,9 +1,11 @@
 package com.univtours.eBilletterie.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.univtours.eBilletterie.entities.User;
 
-public interface UserRepository extends JpaRepository<User, Long>{
+import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface UserRepository extends JpaRepository<User, Long> {
+	User findByUsername(String username);
+
+	User findByEmail(String email);
 }

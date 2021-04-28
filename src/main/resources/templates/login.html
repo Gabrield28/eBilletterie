@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            <div th:fragment="content">
+                <form th:action="@{/login}" method="post" class="col-6 m-auto">
+                    <div class="text-center py-3">
+                        <h1>Veuillez vous connecter</h1>
+                    </div>
+                    <div th:if="${param.error}" class="alert alert-danger">Nom d'utilisateur ou mot de passe invalides.</div>
+                    <div th:if="${param.logout}" class="alert alert-success">Vous avez été déconnecté.</div>
+                    <div class="form-group row py-1">
+                        <label class="col-4 col-form-label" for="username">Nom d'utilisateur :</label>
+                        <div class="col-8">
+                            <input type="text" id="username" name="username" class="form-control" required/>
+                        </div>
+                    </div>
+                    <div class="form-group row py-1">
+                        <label class="col-4 col-form-label" for="password">Mot de passe :</label>
+                        <div class="col-8">
+                            <input type="password" id="password" name="password" class="form-control" required/>
+                        </div>
+                    </div>
+                    <div class="text-end py-3">
+                        <button type="submit" class="btn btn-primary">Se connecter</button>
+                    </div>
+                    <div class="alert alert-info my-3">
+                        <p class="my-1">Vous n'avez pas de compte ? <a href="/register" class="font-weight-bold">Inscrivez-vous !</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

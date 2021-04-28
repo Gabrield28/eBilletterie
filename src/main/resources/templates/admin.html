@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            <div th:replace="fragments :: alerts"></div>
+            <div id="stats" class="py-3">
+                <div class="row align-items-end">
+                    <div class="col-12 col-sm-6">
+                        <h1 class="h2">Statistiques</h1>
+                    </div>
+                    <div class="col-12 col-sm-6 text-end">
+                    </div>
+                </div>
+                <table class="table">
+                    <tr>
+                        <th>Nombre de billets vendus</th>
+                        <td th:text="${confirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Nombre total d'événements (passés et futurs)</th>
+                        <td th:text="${eventsCount + ' événement(s)'}"></td>
+                    </tr>
+                    <tr>
+                        <th>Billets vendus cette année</th>
+                        <td th:text="${yearlyConfirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Evénements qui ont eu lieu au cours de la dernière année</th>
+                        <td th:text="${yearlyEventsCount + ' événement(s)'}"></td>
+                    </tr>
+                    <tr>
+                        <th>Billets vendus ce mois</th>
+                        <td th:text="${monthlyConfirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Evénements qui ont eu lieu au cours du mois dernier</th>
+                        <td th:text="${monthlyEventsCount + ' événement(s)'}"></td>
+                    </tr>
+                    <tr>
+                        <th>Billets vendus cette semaine</th>
+                        <td th:text="${weeklyConfirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Evénements qui ont eu lieu la semaine dernière</th>
+                        <td th:text="${weeklyEventsCount + ' événement(s)'}"></td>
+                    </tr>
+                    <tr>
+                        <th>Billets vendus au cours des dernières 24 heures</th>
+                        <td th:text="${dailyConfirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Evénements qui ont eu lieu au cours des dernières 24 heures</th>
+                        <td th:text="${dailyEventsCount + ' événement(s)'}"></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="users" class="py-3">
+                <div class="row align-items-end">
+                    <div class="col-12 col-sm-6">
+                        <h1 class="h2">Gérer les utilisateurs</h1>
+                    </div>
+                    <div class="col-12 col-sm-6 text-end">
+                        <a class="btn btn-primary my-1" th:href="${'/admin/users'}">Tous les utilisateurs</a>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom complet</th>
+                            <th>Nom d'utilisateur</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Bloqué</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.getFullName}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.showDominantRole}"></td>
+                            <td th:text="${user.showIsBlocked}"></td>
+                            <td class="text-end">
+                                <a class="btn btn-primary my-1" th:href="${'/admin/users/' + user.id + '/'}">Détails</a>
+                                <a class="btn btn-warning my-1" th:href="${'/admin/users/' + user.id + '/update'}">Modifier</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="events" class="py-3">
+                <div class="row align-items-end">
+                    <div class="col-12 col-sm-6">
+                        <h1 class="h2">Gérer les événements</h1>
+                    </div>
+                    <div class="col-12 col-sm-6 text-end">
+                        <a class="btn btn-primary my-1" th:href="${'/admin/events'}">Tous les événements</a>
+                        <a class="btn btn-success my-1" th:href="${'/admin/events/create'}">Ajouter un événement</a>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Artiste / Groupe</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Maintenu</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="event : ${events}">
+                            <td th:text="${event.title}"></th>
+                            <td th:text="${event.artist}"></th>
+                            <td th:text="${event.showType}"></th>
+                            <td th:text="${event.showDateTime}"></th>
+                            <td th:text="${event.showActive}"></th>
+                            <td class="text-end">
+                                <a class="btn btn-primary my-1" th:href="${'/admin/events/' + event.id + '/'}">Détails</a>
+                                <a class="btn btn-warning my-1" th:href="${'/admin/events/' + event.id + '/update'}">Modifier</a>
+                                <a class="btn btn-danger my-1" th:href="${'/admin/events/' + event.id + '/delete'}">Supprimer</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

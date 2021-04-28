@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            
+            <div class="text-center">
+                <h1>Modifier un événement</h1>
+            </div>
+            
+            <form th:action=@{/admin/events/process_update} th:object="${event}" method="post" enctype="multipart/form-data" class="col-6 m-auto py-3">
+
+                <div th:replace="fragments :: alerts"></div>    
+
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Titre :</label>
+                    <div class="col-8">
+                        <input type="text" th:field="*{title}" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Artiste / Groupe :</label>
+                    <div class="col-8">
+                        <input type="text" th:field="*{artist}" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Type :</label>
+                    <div class="col-8">
+                        <select class="form-control" name="_type" id="type">
+                            <option value="1" th:if="${event.type == 1}" selected>Concert</option>
+                            <option value="1" th:if="${event.type != 1}">Concert</option>
+                            <option value="2" th:if="${event.type == 2}" selected>Sports</option>
+                            <option value="2" th:if="${event.type != 2}">Sports</option>
+                            <option value="3" th:if="${event.type == 3}" selected>Arts et théâtre</option>
+                            <option value="3" th:if="${event.type != 3}">Arts et théâtre</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Date :</label>
+                    <div class="col-8">
+                        <input class="form-control" name="_date" type="date" th:value="${event.showDate}" required>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Heure :</label>
+                    <div class="col-8">
+                        <input class="form-control" name="_time" type="time" th:value="${event.showTime}" required>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Addresse :</label>
+                    <div class="col-8">
+                        <input type="text" th:field="*{address}" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Code Postal :</label>
+                    <div class="col-8">
+                        <input type="number" th:field="*{postal_code}" class="form-control" required minlength="5" maxlength="5"/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Ville :</label>
+                    <div class="col-8">
+                        <input type="text" th:field="*{city}" class="form-control" required/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Capacité :</label>
+                    <div class="col-8">
+                        <input type="number" th:field="*{capacity}" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Age minimum :</label>
+                    <div class="col-8">
+                        <input type="number" th:field="*{minimum_age_allowed}" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Status :</label>
+                    <div class="col-8">
+                        <select name="_active" id="active" class="form-control">
+                            <option th:if="${event.isActive}" value="yes" selected>Maintenu</option>
+                            <option th:if="${event.isActive}" value="no">Annulé</option>
+                            <option th:if="${!event.isActive}" value="yes">Maintenu</option>
+                            <option th:if="${!event.isActive}" value="no" selected>Annulé</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row py-1">
+                    <label class="col-4 col-form-label">Image :</label>
+                    <div class="col-8">
+                        <input type="file" name="_image" accept="image/*" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="py-3 text-end">
+                    <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

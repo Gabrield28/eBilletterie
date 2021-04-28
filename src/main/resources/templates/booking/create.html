@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            
+            <div class="text-center">
+                <h1>Réserver des billets pour [[${event.title}]]</h1>
+            </div>
+        
+            <form th:action=@{/events/{event}/buy(event=${event.id})} th:object="${event}" method="post" enctype="multipart/form-data" class="col-6 m-auto py-3">
+                
+                <div th:replace="fragments :: alerts"></div>
+
+                <div th:if="${firstClassPrice}" class="form-group row py-1">
+                    <label class="col-4 col-form-label">Première classe ([[${firstClassPrice}]]€) :</label>
+                    <div class="col-8">
+                        <input type="number" name="firstClass" id="firstClass" class="form-control">
+                    </div>
+                </div>
+                <div th:if="${secondClassPrice}" class="form-group row py-1">
+                    <label class="col-4 col-form-label">Deuxième classe ([[${secondClassPrice}]]€) :</label>
+                    <div class="col-8">
+                        <input type="number" name="secondClass" id="secondClass" class="form-control">
+                    </div>
+                </div>
+                <div th:if="${thirdClassPrice}" class="form-group row py-1">
+                    <label class="col-4 col-form-label">Troisième classe ([[${thirdClassPrice}]]€) :</label>
+                    <div class="col-8">
+                        <input type="number" name="thirdClass" id="thirdClass" class="form-control">
+                    </div>
+                </div>
+
+                <div class="py-3 text-end">
+                    <button type="submit" class="btn btn-primary">Réserver</button>
+                </div>
+            </form>
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>

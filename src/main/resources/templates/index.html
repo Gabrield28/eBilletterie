@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <head th:replace="fragments :: head"></head>
+
+    <body class="bg-light">
+
+        <header th:replace="fragments :: header"></header>
+
+        <div class="body-content container py-5">
+            <div th:replace="fragments :: alerts"></div>
+
+            <h1>Derniers évènements</h1>
+
+            <div th:if="${events.size == 0}">
+                Pas d'événements pour le moment.
+            </div>
+
+            <div class="row">
+
+                <div th:each="event : ${events}" class="col-lg-3 col-md-4 col-sm-6 col-12">
+                    <div class="event-card" th:style="${'background-image: url(' + event.getPhotosImagePath + ')'}">
+                        <div class="overlay">
+                            <a class="overlay-btn border border-light text-light text-decoration-none bg-transparent" th:href="${'/events/' + event.id}">Afficher</a>
+                        </div>
+                        <div class="event-details bg-dark">
+                            <h3 th:text="${event.title}"></h3>
+                            <p class="text-white" th:text="${event.showType + ' - ' + event.artist}"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer th:replace="fragments :: footer"></footer>
+
+    </body>
+
+</html>
