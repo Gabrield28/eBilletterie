@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.univtours.eBilletterie.entities.Booking;
 import com.univtours.eBilletterie.entities.Event;
 import com.univtours.eBilletterie.entities.Rate;
+import com.univtours.eBilletterie.entities.Ticket;
 import com.univtours.eBilletterie.repositories.EventRepository;
 import com.univtours.eBilletterie.repositories.RateRepository;
 import com.univtours.eBilletterie.services.FileUploadService;
@@ -212,7 +213,7 @@ public class EventsController extends BaseController {
             } catch (IOException e) {
                 eventRepo.deleteById(event.getId());
                 redirectAttributes.addFlashAttribute("error", e.getMessage());
-                return "redirect:/admin/events/create"; 
+                return "redirect:/admin/events/create";
             }
 
         }
@@ -239,12 +240,12 @@ public class EventsController extends BaseController {
                     "Vous n'avez pas les autorisations nécessaires pour accéder à cette page.");
             return "redirect:/";
         }
-        
+
         List<Booking> bookings = bookingRepo.findByEventId(event.getId());
         if (bookings.size() > 0) {
             redirectAttributes.addFlashAttribute("error",
                     "Vous ne pouvez pas supprimer cet événement, car quelqu'un a déjà réservé un billet pour celui-ci. Pensez plutôt à l'annuler.");
-            return "redirect:/admin/events";            
+            return "redirect:/admin/events";
         }
 
         eventRepo.delete(event);
@@ -347,10 +348,33 @@ public class EventsController extends BaseController {
                 return "redirect:/admin/events/" + event.getId() + "/update";
             }
 
+            List<Booking> bList = bookingRepo.findByEventId(event.getId());
+            for (Booking booking : bList) {
+                if (booking.getUser().getAge() < event.getMinimum_age_allowed()) {
+                    booking.setActive(false);
+                    bookingRepo.save(booking);
+                }
+            }
+            List<Ticket> tList = ticketRepo.findByEventId(event.getId());
+            for (Ticket ticket : tList) {
+                if (ticket.getUser().getAge() < event.getMinimum_age_allowed()) {
+                    ticket.setActive(false);
+                    ticketRepo.save(ticket);
+                }
+            }
+
             if (request.getParameter("_active").equals("yes")) {
                 event.setActive(true);
             } else {
                 event.setActive(false);
+                for (Booking booking : bList) {
+                    booking.setActive(false);
+                    bookingRepo.save(booking);
+                }
+                for (Ticket ticket : tList) {
+                    ticket.setActive(false);
+                    ticketRepo.save(ticket);
+                }
             }
 
             event.setType(Integer.parseInt(request.getParameter("_type")));
@@ -390,7 +414,8 @@ public class EventsController extends BaseController {
     }
 
     @GetMapping("/events")
-    public String browsePublic(Model model, Principal principal, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String browsePublic(Model model, Principal principal, HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
 
         model = fillModel(model, "Evénements - TicketMaster", principal);
 
@@ -425,22 +450,22 @@ public class EventsController extends BaseController {
         if (qType != null && q != null) {
             if (!q.isBlank()) {
                 switch (qType) {
-                    case "date":
-                        model.addAttribute("searchByDate", true);
-                        if (!q.matches("[0-3][0-9]-[0-1][0-9]-20[0-9][0-9]")) {
-                            redirectAttributes.addFlashAttribute("error", "Date invalide.");
-                            return "redirect:/events";                            
-                        }
-                        events = filterByDate(events, q);
-                        break;
-                    case "locale":
-                        model.addAttribute("searchByLocale", true);
-                        events = filterByLocale(events, q);
-                        break;
-                    default:
-                        model.addAttribute("searchByTitle", true);
-                        events = filterByTitle(events, q);
-                        break;
+                case "date":
+                    model.addAttribute("searchByDate", true);
+                    if (!q.matches("[0-3][0-9]-[0-1][0-9]-20[0-9][0-9]")) {
+                        redirectAttributes.addFlashAttribute("error", "Date invalide.");
+                        return "redirect:/events";
+                    }
+                    events = filterByDate(events, q);
+                    break;
+                case "locale":
+                    model.addAttribute("searchByLocale", true);
+                    events = filterByLocale(events, q);
+                    break;
+                default:
+                    model.addAttribute("searchByTitle", true);
+                    events = filterByTitle(events, q);
+                    break;
                 }
                 model.addAttribute("q", q);
             }
@@ -459,7 +484,7 @@ public class EventsController extends BaseController {
             if (!type.equals(targetType)) {
                 iterator.remove();
             }
-        } 
+        }
         return events;
     }
 
@@ -472,7 +497,7 @@ public class EventsController extends BaseController {
             if (flag1 == false && flag2 == false) {
                 iterator.remove();
             }
-        } 
+        }
         return events;
     }
 
@@ -512,12 +537,12 @@ public class EventsController extends BaseController {
             if (flag1 == false && flag2 == false) {
                 iterator.remove();
             }
-        } 
+        }
         return events;
     }
 
     @GetMapping("/events/{event}")
-    public String indexPublic(Event event, Model model, Principal principal) {
+    public String readPublic(Event event, Model model, Principal principal) {
 
         model = fillModel(model, event.getTitle() + " - TicketMaster", principal);
 

@@ -86,14 +86,14 @@ public class Ticket {
 
     public String showTicketClass() {
         switch (ticketCkass) {
-            case 1:
-                return "1ère Classe";
-            case 2:
-                return "2ème Classe";
-            case 3:
-                return "3ème Classe"; 
-            default:
-                return null;
+        case 1:
+            return "1ère Classe";
+        case 2:
+            return "2ème Classe";
+        case 3:
+            return "3ème Classe";
+        default:
+            return null;
         }
     }
 
@@ -110,6 +110,6 @@ public class Ticket {
     }
 
     public Ticket() {
-        // 
+        //
     }
 }

@@ -110,19 +110,19 @@ public class BookingController extends BaseController {
         }
 
         User cUser = userRepo.findByUsername(principal.getName());
-        
+
         List<Booking> bList = bookingRepo.findByUserIdAndActive(cUser.getId(), true);
         deactiveExpiredEvents(bList);
         bList = bookingRepo.findByUserIdAndActive(cUser.getId(), true);
-        
+
         model.addAttribute("bookings", bList);
-        
+
         if (bList.size() == 0) {
-            model.addAttribute("emptyList", true); 
+            model.addAttribute("emptyList", true);
         }
 
         model = fillModel(model, "Mes réservations - TicketMaster", principal);
-        
+
         return "booking/browse";
     }
 
@@ -153,7 +153,7 @@ public class BookingController extends BaseController {
             redirectAttributes.addFlashAttribute("error", "Vous n'êtes pas le propriétaire de cette réservation.");
             return "redirect:/bookings";
         }
-        
+
         booking.setActive(false);
         bookingRepo.save(booking);
 
@@ -166,13 +166,13 @@ public class BookingController extends BaseController {
             redirectAttributes.addFlashAttribute("error", "Vous devez être authentifié pour accéder à cette page.");
             return "redirect:/";
         }
-        
+
         User cUser = userRepo.findByUsername(principal.getName());
-        
+
         List<Booking> bList = bookingRepo.findByUserIdAndActive(cUser.getId(), true);
         deactiveExpiredEvents(bList);
         bList = bookingRepo.findByUserIdAndActive(cUser.getId(), true);
-        model.addAttribute("bookings", bList);        
+        model.addAttribute("bookings", bList);
         if (bList.size() > 0) {
             model.addAttribute("nonZeroListSize", true);
         }
@@ -191,7 +191,8 @@ public class BookingController extends BaseController {
     }
 
     @PostMapping("/bookings/confirm")
-    public String confirmPOST(Model model, Principal principal, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String confirmPOST(Model model, Principal principal, RedirectAttributes redirectAttributes,
+            HttpServletRequest request) {
         if (principal == null) {
             redirectAttributes.addFlashAttribute("error", "Vous devez être authentifié pour accéder à cette page.");
             return "redirect:/";
@@ -202,26 +203,26 @@ public class BookingController extends BaseController {
             redirectAttributes.addFlashAttribute("error", "Nom invalide.");
             return "redirect:/bookings/confirm";
         }
-        
+
         String cardNumber = request.getParameter("cardNumber");
         cardNumber = cardNumber.replaceAll("\\s", "");
         if (cardNumber == null || !cardNumber.matches("^[0-9]{16}$")) {
             redirectAttributes.addFlashAttribute("error", "Numéro de carte invalide.");
             return "redirect:/bookings/confirm";
         }
-        
+
         String cvc = request.getParameter("cvc");
         if (cvc == null || !cvc.matches("^[0-9]{3}$")) {
             redirectAttributes.addFlashAttribute("error", "CVC invalide.");
             return "redirect:/bookings/confirm";
         }
-        
+
         String month = request.getParameter("month");
         if (month == null || !month.matches("^[0-9]{2}$")) {
             redirectAttributes.addFlashAttribute("error", "Mois invalide.");
             return "redirect:/bookings/confirm";
         }
-        
+
         String year = request.getParameter("year");
         if (year == null || !year.matches("^20[0-9]{2}$")) {
             redirectAttributes.addFlashAttribute("error", "Année invalide.");
@@ -241,7 +242,7 @@ public class BookingController extends BaseController {
         Double totalWithDecimals = (double) total / 100;
 
         // This is where the actual payment system would intervene if it existed
-        System.out.println("L'utilisateur " + cUser.getUsername() + " a été débité " + totalWithDecimals + "€" );
+        System.out.println("L'utilisateur " + cUser.getUsername() + " a été débité " + totalWithDecimals + "€");
 
         for (Booking booking : bList) {
             booking.setConfirmed(true);

@@ -12,6 +12,10 @@
 
             <h1>Derniers évènements</h1>
 
+            <div th:if="${events.size == 0}">
+                Pas d'événements pour le moment.
+            </div>
+
             <div class="row">
 
                 <div th:each="event : ${events}" class="col-lg-3 col-md-4 col-sm-6 col-12">

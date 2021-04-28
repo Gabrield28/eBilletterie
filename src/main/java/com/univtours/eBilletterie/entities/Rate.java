@@ -73,14 +73,14 @@ public class Rate {
 
     public String showTicketClass() {
         switch (ticket_class) {
-            case 1:
-                return "1ère Classe";
-            case 2:
-                return "2ème Classe";
-            case 3:
-                return "3ème Classe";
-            default:
-                return "Classe non définie";
+        case 1:
+            return "1ère Classe";
+        case 2:
+            return "2ème Classe";
+        case 3:
+            return "3ème Classe";
+        default:
+            return "Classe non définie";
         }
     }
 

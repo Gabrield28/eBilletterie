@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RateRepository extends JpaRepository<Rate, Long> {
     List<Rate> findByEventId(Long eventId);
+
     Optional<Rate> findByIdAndEventId(Long id, Long eventId);
 }

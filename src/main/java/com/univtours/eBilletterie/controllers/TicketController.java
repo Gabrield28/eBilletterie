@@ -21,17 +21,26 @@ public class TicketController extends BaseController {
         }
 
         User cUser = userRepo.findByUsername(principal.getName());
-        
-        List<Ticket> tList = ticketRepo.findByUserId(cUser.getId());
-        
+
+        List<Ticket> tList = ticketRepo.findByUserIdAndActive(cUser.getId(), true);
+
+        for (Ticket ticket : tList) {
+            if (ticket.getEvent().isActive() == false) {
+                ticket.setActive(false);
+                ticketRepo.save(ticket);
+            }
+        }
+
+        tList = ticketRepo.findByUserIdAndActive(cUser.getId(), true);
+
         model.addAttribute("tickets", tList);
-        
+
         if (tList.size() == 0) {
-            model.addAttribute("emptyList", true); 
+            model.addAttribute("emptyList", true);
         }
 
         model = fillModel(model, "Mes billets - TicketMaster", principal);
-        
+
         return "ticket/browse";
     }
 }

@@ -1,6 +1,5 @@
 package com.univtours.eBilletterie.entities;
 
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -54,9 +53,7 @@ public class Event {
     @Column(nullable = false)
     private LocalDateTime datetime;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "event")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "event")
     private Set<Rate> rates = new HashSet<>();
 
     public Long getId() {
@@ -107,18 +104,18 @@ public class Event {
         this.city = city;
     }
 
-	public String showAddress() {
-		if (city == null) {
-			return "Addresse non définie";
-		}
-		if(address == null && postal_code == null && city != null) {
-			return this.city;
-		}
-		if(address == null && postal_code != null && city != null) {
-			return this.postal_code + " " + this.city;
-		}
-		return this.address + ", " + this.postal_code + " " + this.city;
-	}
+    public String showAddress() {
+        if (city == null) {
+            return "Addresse non définie";
+        }
+        if (address == null && postal_code == null && city != null) {
+            return this.city;
+        }
+        if (address == null && postal_code != null && city != null) {
+            return this.postal_code + " " + this.city;
+        }
+        return this.address + ", " + this.postal_code + " " + this.city;
+    }
 
     public Boolean isActive() {
         return active;
@@ -136,7 +133,7 @@ public class Event {
         if (active) {
             return "Oui";
         } else {
-            return "Non";            
+            return "Non";
         }
     }
 
@@ -166,8 +163,9 @@ public class Event {
 
     @Transient
     public String getPhotosImagePath() {
-        if (image == null || id == null) return null;
-         
+        if (image == null || id == null)
+            return null;
+
         return "/images/uploaded/events/" + image;
     }
 
@@ -177,14 +175,14 @@ public class Event {
 
     public String showType() {
         switch (type) {
-            case 1:
-                return "Concert";
-            case 2:
-                return "Sports";
-            case 3:
-                return "Arts et théâtre";
-            default:
-                return "Type non défini";
+        case 1:
+            return "Concert";
+        case 2:
+            return "Sports";
+        case 3:
+            return "Arts et théâtre";
+        default:
+            return "Type non défini";
         }
     }
 

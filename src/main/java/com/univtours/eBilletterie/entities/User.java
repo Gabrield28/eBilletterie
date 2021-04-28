@@ -1,9 +1,14 @@
 package com.univtours.eBilletterie.entities;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class User {
@@ -34,7 +39,8 @@ public class User {
 	private String last_name;
 
 	@Column(nullable = false)
-	private Integer age;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate birthday;
 
 	public Long getId() {
 		return id;
@@ -83,7 +89,7 @@ public class User {
 	public Boolean hasRole(String role) {
 		String[] roles = this.roles.split(", ");
 		for (String r : roles) {
-			if(r.equals(role)) {
+			if (r.equals(role)) {
 				return true;
 			}
 		}
@@ -95,7 +101,7 @@ public class User {
 	}
 
 	public String showDominantRole() {
-		if(this.hasRole("ROLE_ADMIN"))
+		if (this.hasRole("ROLE_ADMIN"))
 			return "Administrateur";
 		else
 			return "Utilisateur";
@@ -116,7 +122,7 @@ public class User {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
+
 	public String getFirst_name() {
 		return first_name;
 	}
@@ -133,19 +139,16 @@ public class User {
 		this.last_name = last_name;
 	}
 
-	public Integer getAge() {
-		return age;
+	public LocalDate getBirthday() {
+		return birthday;
 	}
 
-	public void setAge(Integer age) {
-		this.age = age;
+	public void setBirthday(LocalDate birthday) {
+		this.birthday = birthday;
 	}
 
-	public String showAge() {
-		if(age == 0)
-			return "Age non défini";
-		else
-			return Integer.toString(age);
+	public int getAge() {
+		return Period.between(birthday, LocalDate.now()).getYears();
 	}
 
 	public User() {

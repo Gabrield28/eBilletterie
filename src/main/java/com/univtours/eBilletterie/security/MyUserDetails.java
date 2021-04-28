@@ -52,9 +52,9 @@ public class MyUserDetails implements UserDetails {
 	public boolean isEnabled() {
 		return user.isActive();
 	}
-     
-    public String getFullName() {
-        return user.getFirst_name() + " " + user.getLast_name();
-    }
+
+	public String getFullName() {
+		return user.getFirst_name() + " " + user.getLast_name();
+	}
 
 }

@@ -1,6 +1,7 @@
 package com.univtours.eBilletterie.controllers;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class UserController extends BaseController {
 
-	@Autowired
-	private PasswordEncoder encoder;
+    @Autowired
+    private PasswordEncoder encoder;
 
     @GetMapping("/admin/users")
     public String browse(Model model, Principal principal, RedirectAttributes redirectAttributes) {
@@ -40,7 +41,7 @@ public class UserController extends BaseController {
                     "Vous n'avez pas les autorisations nécessaires pour accéder à cette page.");
             return "redirect:/";
         }
-        
+
         List<User> users = userRepo.findAll();
 
         model.addAttribute("users", users);
@@ -75,9 +76,9 @@ public class UserController extends BaseController {
         return "user/read";
     }
 
-	@GetMapping("/register")
-	public String showRegistrationForm(Model model, Principal principal, HttpServletRequest request) {
-		User userToRegister = new User();
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model, Principal principal, HttpServletRequest request) {
+        User userToRegister = new User();
 
         if (principal != null) {
             try {
@@ -88,87 +89,88 @@ public class UserController extends BaseController {
             }
         }
 
-		model = fillModel(model, "Inscription", null);
-		model.addAttribute("user", userToRegister);
+        model = fillModel(model, "Inscription", null);
+        model.addAttribute("user", userToRegister);
 
-		return "register";
-	}
+        return "register";
+    }
 
-	@PostMapping("/process_register")
-	public String processRegister(User user, Model model, Principal principal, HttpServletRequest request,
-			RedirectAttributes redirectAttributes) {
-		if (!user.getLast_name().matches("^[a-zA-Z-']{2,}([ ]?[a-zA-Z-'])*$")) {
-			redirectAttributes.addFlashAttribute("error", "Nom invalide.");
-			return "redirect:/register";
-		}
-		if (!user.getFirst_name().matches("^[a-zA-Z-']{2,}([ ]?[a-zA-Z-'])*$")) {
-			redirectAttributes.addFlashAttribute("error", "Prénom invalide.");
-			return "redirect:/register";
-		}
-        if (user.getAge() < 0) {
-            redirectAttributes.addFlashAttribute("error", "L'âge ne peut pas être négatif.");
+    @PostMapping("/process_register")
+    public String processRegister(User user, Model model, Principal principal, HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
+        if (!user.getLast_name().matches("^[a-zA-Z-']{2,}([ ]?[a-zA-Z-'])*$")) {
+            redirectAttributes.addFlashAttribute("error", "Nom invalide.");
             return "redirect:/register";
         }
-		if (!user.getUsername().matches("^[a-zA-Z-'0-9_]{4,}$")) {
-			redirectAttributes.addFlashAttribute("error", "Nom d'utilisateur invalide.");
-			return "redirect:/register";
-		}
-		if (userRepo.findByUsername(user.getUsername()) != null) {
-			redirectAttributes.addFlashAttribute("error", "Ce nom d'utilisateur est déjà pris.");
-			return "redirect:/register";
-		}
-		if (!user.getEmail().matches("^[a-zA-Z][a-zA-Z0-9-_.]*[@][a-zA-Z][a-zA-Z0-9-_.]+[.][a-zA-Z]{2,}$")) {
-			redirectAttributes.addFlashAttribute("error", "L'email ne peut pas être vide.");
-			return "redirect:/register";
-		}
-		if (userRepo.findByEmail(user.getEmail()) != null) {
-			redirectAttributes.addFlashAttribute("error", "Cet addresse email est déjà utilisée.");
-			return "redirect:/register";
-		}
-		String rawPassword = user.getPassword();
-		String rawPasswordConfirmation = request.getParameter("password_confirmation");
-		if (!rawPassword.equals(rawPasswordConfirmation)) {
-			redirectAttributes.addFlashAttribute("error", "Les mots de passe saisis doivent correspondre.");
-			return "redirect:/register";
-		}
-		if (!rawPassword.matches("^[\\S0-9-_.@*+\\/]{6,}$")) {
-			redirectAttributes.addFlashAttribute("error", "Mot de passe invalide.");
-			return "redirect:/register";
-		}
-		String encodedPassword = encoder.encode(rawPassword);
-		user.setPassword(encodedPassword);
-		user.setRoles("ROLE_USER");
+        if (!user.getFirst_name().matches("^[a-zA-Z-']{2,}([ ]?[a-zA-Z-'])*$")) {
+            redirectAttributes.addFlashAttribute("error", "Prénom invalide.");
+            return "redirect:/register";
+        }
+        if (user.getBirthday().isAfter(LocalDate.now())
+                || user.getBirthday().isBefore(LocalDate.now().minusYears(200))) {
+            redirectAttributes.addFlashAttribute("error", "Date de naissance invalide.");
+            return "redirect:/register";
+        }
+        if (!user.getUsername().matches("^[a-zA-Z-'0-9_]{4,}$")) {
+            redirectAttributes.addFlashAttribute("error", "Nom d'utilisateur invalide.");
+            return "redirect:/register";
+        }
+        if (userRepo.findByUsername(user.getUsername()) != null) {
+            redirectAttributes.addFlashAttribute("error", "Ce nom d'utilisateur est déjà pris.");
+            return "redirect:/register";
+        }
+        if (!user.getEmail().matches("^[a-zA-Z][a-zA-Z0-9-_.]*[@][a-zA-Z][a-zA-Z0-9-_.]+[.][a-zA-Z]{2,}$")) {
+            redirectAttributes.addFlashAttribute("error", "L'email ne peut pas être vide.");
+            return "redirect:/register";
+        }
+        if (userRepo.findByEmail(user.getEmail()) != null) {
+            redirectAttributes.addFlashAttribute("error", "Cet addresse email est déjà utilisée.");
+            return "redirect:/register";
+        }
+        String rawPassword = user.getPassword();
+        String rawPasswordConfirmation = request.getParameter("password_confirmation");
+        if (!rawPassword.equals(rawPasswordConfirmation)) {
+            redirectAttributes.addFlashAttribute("error", "Les mots de passe saisis doivent correspondre.");
+            return "redirect:/register";
+        }
+        if (!rawPassword.matches("^[\\S0-9-_.@*+\\/]{6,}$")) {
+            redirectAttributes.addFlashAttribute("error", "Mot de passe invalide.");
+            return "redirect:/register";
+        }
+        String encodedPassword = encoder.encode(rawPassword);
+        user.setPassword(encodedPassword);
+        user.setRoles("ROLE_USER");
 
-		// If no users exist in the database, make the newly created one an admin
-		if (userRepo.findAll().isEmpty()) {
-			user.addRole("ROLE_ADMIN");
-		}
+        // If no users exist in the database, make the newly created one an admin
+        if (userRepo.findAll().isEmpty()) {
+            user.addRole("ROLE_ADMIN");
+        }
 
-		user.setActive(true);
-		userRepo.save(user);
-		try {
-			request.login(user.getUsername(), rawPassword);
-		} catch (ServletException e) {
-			System.out.println("Erreur lors de la connexion.");
-			return "redirect:/";
-		}
+        user.setActive(true);
+        userRepo.save(user);
+        try {
+            request.login(user.getUsername(), rawPassword);
+        } catch (ServletException e) {
+            System.out.println("Erreur lors de la connexion.");
+            return "redirect:/";
+        }
 
-		return "redirect:/";
-	}
+        return "redirect:/";
+    }
 
-	@GetMapping("/login")
-	public String login(Model model, Principal principal) {
-		model = fillModel(model, "Connexion", principal);
+    @GetMapping("/login")
+    public String login(Model model, Principal principal) {
+        model = fillModel(model, "Connexion", principal);
 
-		return "login";
-	}
+        return "login";
+    }
 
-	@GetMapping("/logout")
-	public String logout(Model model, Principal principal) {
-		model = fillModel(model, "Déconnexion", principal);
+    @GetMapping("/logout")
+    public String logout(Model model, Principal principal) {
+        model = fillModel(model, "Déconnexion", principal);
 
-		return "logout";
-	}
+        return "logout";
+    }
 
     @GetMapping("/admin/users/{user}/update")
     public String update(@PathVariable("user") User user, Model model, Principal principal,
@@ -194,7 +196,8 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/admin/users/process_update")
-    public String updatePost(User user, Model model, Principal principal, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String updatePost(User user, Model model, Principal principal, RedirectAttributes redirectAttributes,
+            HttpServletRequest request) {
 
         if (principal == null) {
             redirectAttributes.addFlashAttribute("error",
@@ -224,8 +227,9 @@ public class UserController extends BaseController {
                 redirectAttributes.addFlashAttribute("error", "Prénom invalide.");
                 return "redirect:/admin/users/" + user.getId() + "/update";
             }
-            if (user.getAge() < 0) {
-                redirectAttributes.addFlashAttribute("error", "L'âge ne peut pas être négatif.");
+            if (user.getBirthday().isAfter(LocalDate.now())
+                    || user.getBirthday().isBefore(LocalDate.now().minusYears(200))) {
+                redirectAttributes.addFlashAttribute("error", "Date de naissance invalide.");
                 return "redirect:/admin/users/" + user.getId() + "/update";
             }
             if (request.getParameter("_roles").equals("ROLE_USER, ROLE_ADMIN")) {
@@ -239,9 +243,9 @@ public class UserController extends BaseController {
                 user.setActive(true);
             }
 
+            mUser.setBirthday(user.getBirthday());
             mUser.setLast_name(user.getLast_name());
             mUser.setFirst_name(user.getFirst_name());
-            mUser.setAge(user.getAge());
             mUser.setRoles(user.getRoles());
             mUser.setActive(user.isActive());
 
@@ -255,12 +259,10 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/profile")
-    public String profile(Model model, Principal principal,
-            RedirectAttributes redirectAttributes) {
+    public String profile(Model model, Principal principal, RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Vous devez être authentifié pour accéder à cette page.");
+            redirectAttributes.addFlashAttribute("error", "Vous devez être authentifié pour accéder à cette page.");
             return "redirect:/";
         }
 
@@ -274,11 +276,11 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/profile/update")
-    public String profilePost(User user, Model model, Principal principal, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String profilePost(User user, Model model, Principal principal, RedirectAttributes redirectAttributes,
+            HttpServletRequest request) {
 
         if (principal == null) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Vous devez être authentifié pour accéder à cette page.");
+            redirectAttributes.addFlashAttribute("error", "Vous devez être authentifié pour accéder à cette page.");
             return "redirect:/";
         }
 
@@ -298,14 +300,15 @@ public class UserController extends BaseController {
                 redirectAttributes.addFlashAttribute("error", "Prénom invalide.");
                 return "redirect:/profile";
             }
-            if (user.getAge() < 0) {
-                redirectAttributes.addFlashAttribute("error", "L'âge ne peut pas être négatif.");
+            if (user.getBirthday().isAfter(LocalDate.now())
+                    || user.getBirthday().isBefore(LocalDate.now().minusYears(200))) {
+                redirectAttributes.addFlashAttribute("error", "Date de naissance invalide.");
                 return "redirect:/profile";
             }
 
             mUser.setLast_name(user.getLast_name());
             mUser.setFirst_name(user.getFirst_name());
-            mUser.setAge(user.getAge());
+            mUser.setBirthday(user.getBirthday());
 
             userRepo.save(mUser);
         } else {

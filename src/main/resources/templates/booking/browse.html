@@ -9,7 +9,7 @@
 
         <div class="body-content container py-5">
             <div th:replace="fragments :: alerts"></div>
-            
+
             <div id="bookings" class="py-3">
                 <div class="row align-items-end">
                     <div class="col-12 col-sm-6">
@@ -32,7 +32,7 @@
                     </thead>
                     <tbody>
                         <tr th:each="booking : ${bookings}">
-                            <td> 
+                            <td>
                                 <a th:href="${'/events/' + booking.event.id}" th:text="${booking.event.title}" class="text-decoration-none"></a>
                             </td>
                             <td th:text="${booking.showTicketClass}"></td>

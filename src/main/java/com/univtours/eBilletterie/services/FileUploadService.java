@@ -10,7 +10,7 @@ import java.nio.file.StandardCopyOption;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileUploadService {
-    
+
     public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {

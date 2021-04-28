@@ -47,8 +47,12 @@
                     <th class="col-12 col-sm-6 fw-normal" th:text="${user.getFullName}"></th>
                 </tr>
                 <tr class="row">
+                    <th class="col-12 col-sm-6">Date de naissance</th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.birthday}"></th>
+                </tr>
+                <tr class="row">
                     <th class="col-12 col-sm-6">Age</th>
-                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.showAge}"></th>
+                    <th class="col-12 col-sm-6 fw-normal" th:text="${user.getAge}"></th>
                 </tr>
             </table>
 
