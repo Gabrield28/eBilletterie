@@ -60,7 +60,7 @@ public class AdminController extends BaseController {
     }
 
     private Model fillModelWithStats(Model model) {
-        List<Ticket> tList = ticketRepo.findAll();
+        List<Ticket> tList = ticketRepo.findByActive(true);
         Integer yearlyConfirmedBookingsCount = 0;
         Integer monthlyConfirmedBookingsCount = 0;
         Integer weeklyConfirmedBookingsCount = 0;
@@ -86,6 +86,33 @@ public class AdminController extends BaseController {
         model.addAttribute("monthlyConfirmedBookingsCount", monthlyConfirmedBookingsCount);
         model.addAttribute("weeklyConfirmedBookingsCount", weeklyConfirmedBookingsCount);
         model.addAttribute("dailyConfirmedBookingsCount", dailyConfirmedBookingsCount);
+
+        List<Event> eList = eventRepo.findByActive(true);
+        Integer yearlyEventsCount = 0;
+        Integer monthlyEventsCount = 0;
+        Integer weeklyEventsCount = 0;
+        Integer dailyEventsCount = 0;
+        for (Event event : eList) {
+            LocalDateTime eventDateTime = event.getDatetime();
+            if (eventDateTime.isAfter(now.minusYears(1)) && eventDateTime.isBefore(now)) {
+                yearlyEventsCount++;
+            }
+            if (eventDateTime.isAfter(now.minusMonths(1)) && eventDateTime.isBefore(now)) {
+                monthlyEventsCount++;
+            }
+            if (eventDateTime.isAfter(now.minusWeeks(1)) && eventDateTime.isBefore(now)) {
+                weeklyEventsCount++;
+            }
+            if (eventDateTime.isAfter(now.minusDays(1)) && eventDateTime.isBefore(now)) {
+                dailyEventsCount++;
+            }
+        }
+        model.addAttribute("eventsCount", eList.size());
+        model.addAttribute("yearlyEventsCount", yearlyEventsCount);
+        model.addAttribute("monthlyEventsCount", monthlyEventsCount);
+        model.addAttribute("weeklyEventsCount", weeklyEventsCount);
+        model.addAttribute("dailyEventsCount", dailyEventsCount);
+
         return model;
     }
 }

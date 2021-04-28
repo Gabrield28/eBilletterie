@@ -19,24 +19,34 @@
                 </div>
                 <table class="table">
                     <tr>
-                        <th class="w-50">Nombre de billets vendus</th>
-                        <td th:text="${confirmedBookingsCount + ' billets'}"></td>
+                        <th>Nombre de billets vendus</th>
+                        <td th:text="${confirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Nombre total d'événements (passés et futurs)</th>
+                        <td th:text="${eventsCount + ' événement(s)'}"></td>
                     </tr>
                     <tr>
-                        <th class="w-50">Nombre de billets vendus cette année</th>
-                        <td th:text="${yearlyConfirmedBookingsCount + ' billets'}"></td>
+                        <th>Billets vendus cette année</th>
+                        <td th:text="${yearlyConfirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Evénements qui ont eu lieu au cours de la dernière année</th>
+                        <td th:text="${yearlyEventsCount + ' événement(s)'}"></td>
                     </tr>
                     <tr>
-                        <th class="w-50">Nombre de billets vendus ce mois</th>
-                        <td th:text="${monthlyConfirmedBookingsCount + ' billets'}"></td>
+                        <th>Billets vendus ce mois</th>
+                        <td th:text="${monthlyConfirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Evénements qui ont eu lieu au cours du mois dernier</th>
+                        <td th:text="${monthlyEventsCount + ' événement(s)'}"></td>
                     </tr>
                     <tr>
-                        <th class="w-50">Nombre de billets vendus cette semaine</th>
-                        <td th:text="${weeklyConfirmedBookingsCount + ' billets'}"></td>
+                        <th>Billets vendus cette semaine</th>
+                        <td th:text="${weeklyConfirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Evénements qui ont eu lieu la semaine dernière</th>
+                        <td th:text="${weeklyEventsCount + ' événement(s)'}"></td>
                     </tr>
                     <tr>
-                        <th class="w-50">Nombre de billets vendus dans les dernières 24h</th>
-                        <td th:text="${dailyConfirmedBookingsCount + ' billets'}"></td>
+                        <th>Billets vendus au cours des dernières 24 heures</th>
+                        <td th:text="${dailyConfirmedBookingsCount + ' billet(s)'}"></td>
+                        <th>Evénements qui ont eu lieu au cours des dernières 24 heures</th>
+                        <td th:text="${dailyEventsCount + ' événement(s)'}"></td>
                     </tr>
                 </table>
             </div>
