@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.univtours.eBilletterie.entities.Booking;
 import com.univtours.eBilletterie.entities.Event;
 import com.univtours.eBilletterie.entities.Rate;
 import com.univtours.eBilletterie.repositories.EventRepository;
@@ -211,7 +212,7 @@ public class EventsController extends BaseController {
             } catch (IOException e) {
                 eventRepo.deleteById(event.getId());
                 redirectAttributes.addFlashAttribute("error", e.getMessage());
-                return "redirect:/admin/events/create";
+                return "redirect:/admin/events/create"; 
             }
 
         }
@@ -238,10 +239,17 @@ public class EventsController extends BaseController {
                     "Vous n'avez pas les autorisations nécessaires pour accéder à cette page.");
             return "redirect:/";
         }
+        
+        List<Booking> bookings = bookingRepo.findByEventId(event.getId());
+        if (bookings.size() > 0) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Vous ne pouvez pas supprimer cet événement, car quelqu'un a déjà réservé un billet pour celui-ci. Pensez plutôt à l'annuler.");
+            return "redirect:/admin/events";            
+        }
 
         eventRepo.delete(event);
 
-        return "redirect:/admin";
+        return "redirect:/admin/events";
     }
 
     @GetMapping("/admin/events/{event}/update")
