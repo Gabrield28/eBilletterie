@@ -26,7 +26,7 @@ public class TicketController extends BaseController {
         List<Ticket> tList = ticketRepo.findByUserIdAndActive(cUser.getId(), true);
 
         for (Ticket ticket : tList) {
-            if (ticket.getEvent().isActive() == false || ticket.getEvent().getDatetime().isAfter(LocalDateTime.now())) {
+            if (ticket.getEvent().isActive() == false || ticket.getEvent().getDatetime().isBefore(LocalDateTime.now())) {
                 ticket.setActive(false);
                 ticketRepo.save(ticket);
             }

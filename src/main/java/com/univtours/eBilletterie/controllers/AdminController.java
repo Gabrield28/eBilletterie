@@ -69,7 +69,7 @@ public class AdminController extends BaseController {
     }
 
     private Model fillModelWithStats(Model model) {
-        List<Ticket> tList = ticketRepo.findByActive(true);
+        List<Ticket> tList = ticketRepo.findAll();
         Integer yearlyConfirmedBookingsCount = 0;
         Integer monthlyConfirmedBookingsCount = 0;
         Integer weeklyConfirmedBookingsCount = 0;
