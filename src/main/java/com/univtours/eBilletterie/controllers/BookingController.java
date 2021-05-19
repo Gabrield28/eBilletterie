@@ -68,6 +68,14 @@ public class BookingController extends BaseController {
             }
         }
 
+        List<Ticket> tList = ticketRepo.findByUserIdAndEventId(currentUser.getId(), event.getId());
+        for (Ticket ticket : tList) {
+            if (ticket.isActive()) {
+                redirectAttributes.addFlashAttribute("error", "Vous avez déjà un billet pour cet événement.");
+                return "redirect:/events/" + event.getId();
+            }
+        }
+
         Booking booking = new Booking();
         booking.setEvent(event);
         booking.setUser(currentUser);
@@ -132,7 +140,7 @@ public class BookingController extends BaseController {
                 if (booking.isActive() == false) {
                     continue;
                 }
-                if (booking.getExpiryDateTime().compareTo(LocalDateTime.now()) <= 0) {
+                if (booking.getExpiryDateTime().compareTo(LocalDateTime.now()) <= 0 || booking.getEvent().getDatetime().isBefore(LocalDateTime.now())) {
                     booking.setActive(false);
                     bookingRepo.save(booking);
                 }

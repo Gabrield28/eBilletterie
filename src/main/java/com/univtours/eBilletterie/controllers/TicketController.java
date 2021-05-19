@@ -1,6 +1,7 @@
 package com.univtours.eBilletterie.controllers;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.univtours.eBilletterie.entities.Ticket;
@@ -25,7 +26,7 @@ public class TicketController extends BaseController {
         List<Ticket> tList = ticketRepo.findByUserIdAndActive(cUser.getId(), true);
 
         for (Ticket ticket : tList) {
-            if (ticket.getEvent().isActive() == false) {
+            if (ticket.getEvent().isActive() == false || ticket.getEvent().getDatetime().isBefore(LocalDateTime.now())) {
                 ticket.setActive(false);
                 ticketRepo.save(ticket);
             }

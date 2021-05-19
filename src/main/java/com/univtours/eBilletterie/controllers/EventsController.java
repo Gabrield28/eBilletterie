@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
@@ -58,7 +59,15 @@ public class EventsController extends BaseController {
             return "redirect:/";
         }
 
-        List<Event> events = eventRepo.findAll();
+        List<Event> eventsInDB = eventRepo.findAll();
+
+        List<Event> events = new ArrayList<Event>();
+
+        for (Event event : eventsInDB) {
+            if (event.getDatetime().isAfter(LocalDateTime.now())) {
+                events.add(event); 
+            }
+        }
 
         model.addAttribute("events", events);
 
@@ -419,7 +428,15 @@ public class EventsController extends BaseController {
 
         model = fillModel(model, "Evénements - TicketMaster", principal);
 
-        List<Event> events = eventRepo.findAll();
+        List<Event> eventsInDB = eventRepo.findAll();
+
+        List<Event> events = new ArrayList<Event>();
+
+        for (Event event : eventsInDB) {
+            if (event.getDatetime().isAfter(LocalDateTime.now())) {
+                events.add(event);
+            }
+        }
 
         String typeFilter = request.getParameter("typeFilter");
         if (typeFilter != null) {

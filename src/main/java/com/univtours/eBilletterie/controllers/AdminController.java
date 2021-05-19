@@ -2,6 +2,7 @@ package com.univtours.eBilletterie.controllers;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.univtours.eBilletterie.entities.Event;
@@ -47,7 +48,15 @@ public class AdminController extends BaseController {
         }
         model.addAttribute("users", users);
 
-        List<Event> events = eventRepo.findAll();
+        List<Event> eventsInDB = eventRepo.findAll();
+        
+        List<Event> events = new ArrayList<Event>();
+
+        for (Event event : eventsInDB) {
+            if (event.getDatetime().isAfter(LocalDateTime.now())) {
+                events.add(event);
+            }
+        }
         // If number of events is too great, limit that number to LIMIT
         if (events.size() > LIMIT) {
             events = events.subList(events.size() - LIMIT, events.size());
@@ -60,7 +69,7 @@ public class AdminController extends BaseController {
     }
 
     private Model fillModelWithStats(Model model) {
-        List<Ticket> tList = ticketRepo.findByActive(true);
+        List<Ticket> tList = ticketRepo.findAll();
         Integer yearlyConfirmedBookingsCount = 0;
         Integer monthlyConfirmedBookingsCount = 0;
         Integer weeklyConfirmedBookingsCount = 0;
